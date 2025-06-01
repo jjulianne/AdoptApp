@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
@@ -169,3 +170,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+=======
+// app/index.jsx
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../context/authContext';
+
+export default function Index() {
+  const { status } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'checking') return;
+console.log("status:" +status)
+    if (status === 'authenticated') {
+      router.replace('/(tabs)');
+    } else {
+      router.replace('/login');
+    }
+  }, [status]);
+
+  return null; 
+}
+>>>>>>> develop

@@ -15,6 +15,9 @@
 
     const inAuthGroup = segments[0] === 'login'
 
+    console.log("is auth "+isAuth)
+     console.log("is inAuthGroup "+inAuthGroup)
+
     if(!isAuth && !inAuthGroup){
       router.replace('/login')
     }else if(isAuth && inAuthGroup){

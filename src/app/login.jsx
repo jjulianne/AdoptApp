@@ -16,7 +16,7 @@ export default function LoginScreen() {
         if(esLogin){
             login(usuario, password)
         }else{
-            register(usuario, email, password)
+            register({usuario, email, password})
         }
     }
 
