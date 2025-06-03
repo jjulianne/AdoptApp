@@ -1,4 +1,3 @@
-// app/index.jsx
 import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/authContext';
