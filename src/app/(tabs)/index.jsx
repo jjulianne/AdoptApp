@@ -42,7 +42,14 @@ export default function Home() {
         <View style={styles.container}>
             <FlatList
                 data={mascotas}
-                keyExtractor={(item, index) => item?.id?.toString() || index.toString()}
+                keyExtractor={(item, index) => {
+                // Verifica si item.id es un valor numérico válido y no es NaN
+                    if (item && typeof item.id !== 'undefined' && item.id !== null && !isNaN(item.id)) {
+                    return item.id.toString();
+                    }
+                    // Si item.id no es válido (ej. NaN), crea una clave única con el tipo y el índice
+                    return `${item?.type || 'unknown'}-${index}`;
+                }}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <ImageBackground 
