@@ -1,8 +1,9 @@
- import { Stack, useRouter, useSegments } from 'expo-router'
- import React, { useEffect } from 'react'
- import { AuthProvider, useAuth } from '../context/authContext'
+import { Stack, useRouter, useSegments } from 'expo-router'
+import React, { useEffect } from 'react'
+import { AuthProvider, useAuth } from '../context/authContext'
+import { MascotasProvider } from '../context/mascotasContext'
 
- function ProtectedLayout() {
+function ProtectedLayout() {
 
   const {isAuth} = useAuth()
 
@@ -16,7 +17,7 @@
     const inAuthGroup = segments[0] === 'login'
 
     console.log("is auth "+isAuth)
-     console.log("is inAuthGroup "+inAuthGroup)
+    console.log("is inAuthGroup "+inAuthGroup)
 
     if(!isAuth && !inAuthGroup){
       router.replace('/login')
@@ -39,9 +40,9 @@
 export default function LayoutPrincipal(){
   return (
     <AuthProvider>
-    
-      <ProtectedLayout/>  
-     
+      <MascotasProvider>
+        <ProtectedLayout/>  
+      </MascotasProvider>
     </AuthProvider>
   )
 }
