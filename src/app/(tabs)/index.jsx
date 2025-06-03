@@ -46,7 +46,7 @@ export default function Home() {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <ImageBackground 
-                            source={{ uri: item.photo }} 
+                            source={{ uri: item.type === "gato" ? `${item.photo}?t=${Date.now()}` : item.photo }} 
                             style={styles.image} 
                             imageStyle={styles.imageStyle}
                         >
