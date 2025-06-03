@@ -105,6 +105,7 @@ const register = async ({usuario, email, password}) => {
     console.log("USUARIO"+usuario)
     console.log("PASSWORD"+password)
 
+    console.log(data)
    
     const userExist = data.some(u => u.username === usuario);
     const emailExist = data.some(u => u.email === email);
