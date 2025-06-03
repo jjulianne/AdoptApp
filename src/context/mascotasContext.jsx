@@ -44,7 +44,7 @@ export const MascotasProvider = ({ children }) => {
                 imagen = `https://placedog.net/400/300?id=${mascota.id}`;
               }
             } else {
-              imagen = "https://cataas.com/cat";
+              imagen = `https://cataas.com/cat?width=400&height=300&timestamp=${Date.now()}`;
             }
 
             return {
