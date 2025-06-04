@@ -99,6 +99,40 @@ export const MascotasProvider = ({ children }) => {
     return mascotas.find((mascota) => mascota.id === id);
     };
 
+
+
+
+const publicarMascota = async ({ name, type, breed, age, photo, description, location }) => {
+  try {
+    const nuevaMascota = {
+      name,
+      type,
+      breed,
+      age: Number(age),
+      photo, // esto es el URI de la imagen tomada o seleccionada
+      description,
+      location,
+      adopted: false
+    };
+
+    const response = await fetch('https://683644b2664e72d28e404ea3.mockapi.io/pets', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(nuevaMascota)
+    });
+
+    if (!response.ok) throw new Error('Error al publicar mascota');
+
+    const mascotaGuardada = await response.json();
+    setMascotas(prev => [mascotaGuardada, ...prev]);
+  } catch (error) {
+    console.error("Error al publicar:", error);
+  }
+};
+
+
     return (
     <MascotasContext.Provider
         value={{
@@ -108,6 +142,7 @@ export const MascotasProvider = ({ children }) => {
         fetchMascotas,
         adoptarMascota,
         obtenerMascotaPorId,
+        publicarMascota
         }}
     >
     {children}
