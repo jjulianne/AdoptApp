@@ -66,8 +66,6 @@ export const AuthProvider = ({children}) => {
             const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/users');
             const data = await response.json()
             
-            console.log("Usuario ingresado:", usuario);
-console.log("Password ingresado:", password);
  
              const user = data.find(
   u => u.username.trim().toLowerCase() === usuario.trim().toLowerCase() &&
@@ -102,10 +100,6 @@ const register = async ({usuario, email, password}) => {
     const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/users');
     const data = await response.json();
 
-    console.log("USUARIO"+usuario)
-    console.log("PASSWORD"+password)
-
-    console.log(data)
    
     const userExist = data.some(u => u.username === usuario);
     const emailExist = data.some(u => u.email === email);
