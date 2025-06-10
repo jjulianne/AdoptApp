@@ -13,10 +13,10 @@ export default function DetalleMascota() {
             try {
                 const res = await fetch(`https://683ba22b28a0b0f2fdc514df.mockapi.io/pet/${mascotaId}`);
                 const data = await res.json();
-                console.log("MASCOTA DETTALLE" +mascotaId)
+                
                 setDatos(data);
             } catch (error) {
-                console.error('Error al cargar la mascota:', error);
+                
             } finally {
                 setCargando(false);
             }

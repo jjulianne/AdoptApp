@@ -24,7 +24,7 @@ export default function FormularioAdopcion() {
             Alert.alert('Faltan datos', 'Por favor completá todos los campos obligatorios.');
             return;
         }
-console.log('👤 Usuario logueado:', user);  
+
         const nuevaSolicitud = {
            mascotaId,
            usuarioId: user?.id,
@@ -55,7 +55,7 @@ console.log('👤 Usuario logueado:', user);
             Alert.alert('Error', 'No se pudo enviar la solicitud.');
         }
     };
-console.log('🧑‍💻 Usuario desde contexto:', user);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Formulario de Adopción</Text>
