@@ -2,9 +2,12 @@ import React from 'react';
 import { ActivityIndicator, FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useMascotas } from '../context/mascotasContext'
+import {useRouter} from 'expo-router';
 
 export default function mascotas() {
     const { mascotas, loadingMascotas, errorMascotas, fetchMascotas } = useMascotas(); 
+
+    const router = useRouter();
 
     if (loadingMascotas) {
         return (
@@ -92,9 +95,10 @@ export default function mascotas() {
                                 </View>
                                 <TouchableOpacity 
                                     style={styles.button} 
-                                    onPress={() => { 
-                                        
-                                     }}
+                                   onPress={() => { 
+                                    console.log("Item al hacer click:", item);
+                                                router.push(`/${item.id}/detalle`);
+                                               }}
                                 >
                                     <Text style={styles.buttonText}>Ver detalles</Text>
                                 </TouchableOpacity>

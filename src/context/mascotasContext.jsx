@@ -8,7 +8,7 @@ export const MascotasProvider = ({ children }) => {
     const [loadingMascotas, setLoadingMascotas] = useState(true);
     const [errorMascotas, setErrorMascotas] = useState(null);
 
-    const API_URL = "https://683644b2664e72d28e404ea3.mockapi.io/pets";
+    const API_URL = "https://683ba22b28a0b0f2fdc514df.mockapi.io/pet";
 
   // Función para obtener las mascotas
     const fetchMascotas = async () => {
@@ -109,13 +109,13 @@ const publicarMascota = async ({ name, type, breed, age, photo, description, loc
       type,
       breed,
       age: Number(age),
-      photo, // esto es el URI de la imagen tomada o seleccionada
+      photo, // esto es el URI de la imagen tomada o seleccionada 
       description,
       location,
       adopted: false
     };
 
-    const response = await fetch('https://683644b2664e72d28e404ea3.mockapi.io/pets', {
+    const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/pet', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
