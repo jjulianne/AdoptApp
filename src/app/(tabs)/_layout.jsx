@@ -44,7 +44,15 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} /> 
         }} 
       />
+      <Tabs.Screen
+        name="mascotas"
+        options={{
+        href: null,
+        headerShown: false,
+        }}
+      />
     </Tabs>
+    
   )
 }
 
