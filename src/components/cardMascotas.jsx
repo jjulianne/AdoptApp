@@ -24,27 +24,27 @@ export default function CardMascotas({ item }) {
                 {item.description || 'Este animalito busca un hogar lleno de amor.'}
             </Text>
         <View style={styles.infoRow}>
-            {item.breed && (
+            {item.breed ?  (
                 <View style={styles.infoTag}>
                     <Text style={styles.infoText}>{item.breed}</Text>
-                </View>
-            )}
-            {item.age && (
+                </View> 
+            ) : null}
+            {item.age ? (
                 <View style={styles.infoTag}>
-                    <Text style={styles.infoText}>{item.age} años</Text>
+                <Text style={styles.infoText}>{item.age} años</Text>
                 </View>
-            )}
-            {item.type && (
+            ) : null}
+            {item.type ? (
                 <View style={styles.infoTag}>
                     <Text style={styles.infoText}>{item.type}</Text>
                 </View>
-            )}
-            {item.location && (
+            ) : null}
+            {item.location ? (
                 <View style={styles.infoTag}>
                     <Ionicons name="location" size={12} color="#444" style={{ marginRight: 4 }} />
                     <Text style={styles.infoText}>{item.location}</Text>
                 </View>
-            )}
+            ) : null}
             </View>
         <TouchableOpacity 
             style={styles.button} 
