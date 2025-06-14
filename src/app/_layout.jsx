@@ -6,6 +6,7 @@ import { MascotasProvider } from '../context/mascotasContext'
 function ProtectedLayout() {
 
   const {isAuth} = useAuth()
+  const {user} =useAuth()
 
   const segments = useSegments()
   const router = useRouter()
@@ -16,15 +17,15 @@ function ProtectedLayout() {
 
     const inAuthGroup = segments[0] === 'login'
 
-   
-
-    if(!isAuth && !inAuthGroup){
-      router.replace('/login')
-    }else if(isAuth && inAuthGroup){
-      router.replace('/(tabs)')
+   if (!isAuth && !inAuthGroup) {
+    router.replace('/login');
+  } else if (isAuth && inAuthGroup) {
+    if (user?.isAdmin) {
+      router.replace('/admin/solicitudes');
+    } else {
+      router.replace('/(tabs)');
     }
-
-    
+  }
   }, [isAuth, segments])
   
 
