@@ -1,14 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "./authContext";
 
 const MascotasContext = createContext();
 export const useMascotas = () => useContext(MascotasContext);
+
 
 export const MascotasProvider = ({ children }) => {
     const [mascotas, setMascotas] = useState([]);
     const [loadingMascotas, setLoadingMascotas] = useState(true);
     const [errorMascotas, setErrorMascotas] = useState(null);
+    const {user} = useAuth()
 
-    const API_URL = "https://683ba22b28a0b0f2fdc514df.mockapi.io/pet";
+    const API_URL = "https://tp2-backend-production-eb95.up.railway.app/pets";
 
   // Función para obtener las mascotas
     const fetchMascotas = async () => {
@@ -25,37 +28,29 @@ export const MascotasProvider = ({ children }) => {
 
     const data = await response.json();
 
-    const mascotasDisponibles = await Promise.all(
-        data
-            .filter((mascota) => !mascota.adopted)
-            .map(async (mascota) => {
-            const tipo = Math.random() < 0.5 ? "perro" : "gato";
-            let imagen = "";
+  const mascotasDisponibles = data.message
+  .filter((mascota) => !mascota.adopted)
+  .map((mascota) => {
+    // Si la mascota ya tiene una foto, la usamos
+    let imagen = mascota.photo;   // creo que esta fallando la pre-carga de imagenes de gatos
 
-            if (tipo === "perro") {
-            try {
-                const res = await fetch(
-                    "https://dog.ceo/api/breeds/image/random"
-                );
-                const json = await res.json();
-                imagen = json.message;
-            } catch (error) {
-                console.error("Error obteniendo imagen de perro", error);
-                imagen = `https://placedog.net/400/300?id=${mascota.id}`;
-            }
-            } else {
-                imagen = "https://cataas.com/cat";
-            }
+    // Si no tiene foto, asignamos una por defecto según su tipo
+    if (!imagen || imagen.trim() === "") {
+      if (mascota.type === "perro") {
+        imagen = `https://placedog.net/400/300?id=${mascota.id}`;
+      } else {
+        imagen = "https://cataas.com/cat";
+      }
+    }
 
-            return {
-                ...mascota,
-                type: tipo,
-                photo: imagen,
-            };
-            })
-    );
+    return {
+      ...mascota,
+      photo: imagen,
+    };
+  });
 
-    setMascotas(mascotasDisponibles);
+setMascotas(mascotasDisponibles);
+
     } catch (error) {
         console.error("Error al obtener mascotas:", error);
         setErrorMascotas(
@@ -102,7 +97,7 @@ export const MascotasProvider = ({ children }) => {
 
 
 
-const publicarMascota = async ({ name, type, breed, age, photo, description, location }) => {
+const publicarMascota = async ({ name, type, breed, age, photo, description, location,gender }) => {
   try {
     const nuevaMascota = {
       name,
@@ -112,10 +107,12 @@ const publicarMascota = async ({ name, type, breed, age, photo, description, loc
       photo, // esto es el URI de la imagen tomada o seleccionada 
       description,
       location,
-      adopted: false
+      gender,
+      adopted: false,
+      userId: user?.id,
     };
 
-    const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/pet', {
+    const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/pets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
