@@ -57,52 +57,57 @@ export const AuthProvider = ({children}) => {
     cargarEstadoAuth();
 }, []);
 
+const login = async (usuario, password) => {
+  try {
+    console.log('Iniciando Login');
 
+    const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/users');
+    console.log("Response status:", response.status);
+    const data = await response.json();
 
-    const login = async (usuario, password) => {
-        try {
-            console.log('Iniciando Login');
-            
-            const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/users');
-            const data = await response.json()
-            
- 
-             const user = data.find(
-  u => u.username.trim().toLowerCase() === usuario.trim().toLowerCase() &&
-       u.password === password
-);
+    const users = data.message; 
 
-            
-                         
+    console.log("DATA:", users[0].pass);
 
+    const user = users.find(
+      u =>
+        u?.username?.trim().toLowerCase() === usuario.trim().toLowerCase() &&
+        u?.pass === password
+    );
 
-            if(user){
-                await AsyncStorage.setItem('isAuthenticated', 'true')
-                await AsyncStorage.setItem('userData', JSON.stringify(user))
-                setUser(user)
-                setIsAuth(true)
-                setStatus('authenticated')
-            }else{
-                alert('Usuario o password incorrectos')
-                setStatus('unauthenticated')
-            }
-        } catch (error) {
-            console.error(error)
-            alert('Error en la authenticacion')
-            setStatus('unauthenticated')
-        }
+    if (user) {
+      await AsyncStorage.setItem('isAuthenticated', 'true');
+      await AsyncStorage.setItem('userData', JSON.stringify(user));
+      setUser(user);
+      setIsAuth(true);
+      setStatus('authenticated');
+      alert('Login exitoso 👌');
+    } else {
+      alert('Usuario o contraseña incorrectos');
+      setStatus('unauthenticated');
     }
+  } catch (error) {
+    console.error(error);
+    alert('Error en la autenticación');
+    setStatus('unauthenticated');
+  }
+};
+
+
+   
 
 
 const register = async ({usuario, email, password}) => {
   try {
-    
-    const response = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/users');
+    console.log("Datos que se envían:", { usuario, email, password }); 
+    const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/users');
     const data = await response.json();
+    
+const users = data.message; 
+const userExist = users.some(u => u.username === usuario);
+const emailExist = users.some(u => u.email === email);
+console.log("pass" + users.pass)
 
-   
-    const userExist = data.some(u => u.username === usuario);
-    const emailExist = data.some(u => u.email === email);
 
     if (userExist) {
       alert('Usuario ya registrado');
@@ -112,11 +117,14 @@ const register = async ({usuario, email, password}) => {
       const body = JSON.stringify({
         email: email,
         username: usuario,
-        password: password,
-        avatar: ""
+        pass: password,
+        avatar: "", 
+        location: "",
+          phone: "",
+         isAdmin: false,
       });
 
-      const respuesta = await fetch('https://683ba22b28a0b0f2fdc514df.mockapi.io/users', {
+      const respuesta = await fetch('https://tp2-backend-production-eb95.up.railway.app/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

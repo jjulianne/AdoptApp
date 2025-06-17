@@ -12,12 +12,13 @@ export default function PublicarMascota() {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [genero, setGenero] = useState("");
 
   const { publicarMascota } = useMascotas();
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!name || !type || !breed || !age || !description || !location || !photo) {
+    if (!name || !type || !breed || !age || !description || !location || !photo || !genero) {
       Alert.alert("Faltan datos", "Por favor completá todos los campos.");
       return;
     }
@@ -30,6 +31,7 @@ export default function PublicarMascota() {
       description,
       location,
       photo,
+      gender : genero,
     });
 
     Alert.alert( "Mascota publicada correctamente.");
@@ -51,7 +53,8 @@ export default function PublicarMascota() {
 
       <Text style={styles.label}>Edad</Text>
       <TextInput style={styles.input} value={age} onChangeText={setAge} placeholder="Ej. 3" keyboardType="numeric" />
-
+      <Text style={styles.label}>genero</Text>
+      <TextInput style={styles.input} value={genero} onChangeText={setGenero} placeholder="hembra/macho"  />
       <Text style={styles.label}>Descripción</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
