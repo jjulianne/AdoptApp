@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../../context/authContext';
 
 export default function DetalleMascota() {
   const { mascotaId } = useLocalSearchParams();
   const router = useRouter();
   const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const {user} = useAuth();
 
   useEffect(() => {
     const fetchMascota = async () => {
@@ -66,12 +68,14 @@ export default function DetalleMascota() {
         <Text style={styles.info}>Tipo: {datos.type}</Text>
         <Text style={styles.info}>Ubicación: {datos.location}</Text>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push(`/formulario-adopcion/${datos.id}`)}
-        >
-          <Text style={styles.buttonText}>Quiero adoptar</Text>
-        </TouchableOpacity>
+      {!user?.isAdmin && (
+  <TouchableOpacity
+    style={styles.button}
+    onPress={() => router.push(`/formulario-adopcion/${datos.id}`)}
+  >
+    <Text style={styles.buttonText}>🐾 Quiero adoptar</Text>
+  </TouchableOpacity>
+)}
       </ScrollView>
     </SafeAreaView>
   );

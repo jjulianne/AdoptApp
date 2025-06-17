@@ -31,8 +31,8 @@ export default function FormularioAdopcion() {
     }
 
     const nuevaSolicitud = {
-      mascotaId,
-      usuarioId: user?.id,
+       petId: mascotaId,
+  userId: user?.id,
       vivienda,
       otrasMascotas: tieneMascotas ? `Sí, ${cantidadMascotas}` : 'No',
       profesion,
@@ -49,7 +49,7 @@ export default function FormularioAdopcion() {
         body: JSON.stringify(nuevaSolicitud),
       });
 
-      Alert.alert('¡Solicitud enviada!', 'Tu solicitud fue enviada al administrador.');
+      Alert.alert('¡Solicitud enviada!');
       router.push('/');
     } catch (error) {
       console.error('Error al enviar solicitud:', error);

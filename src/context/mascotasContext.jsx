@@ -32,7 +32,7 @@ export const MascotasProvider = ({ children }) => {
   .filter((mascota) => !mascota.adopted)
   .map((mascota) => {
     // Si la mascota ya tiene una foto, la usamos
-    let imagen = mascota.photo;
+    let imagen = mascota.photo;   // creo que esta fallando la pre-carga de imagenes de gatos
 
     // Si no tiene foto, asignamos una por defecto según su tipo
     if (!imagen || imagen.trim() === "") {

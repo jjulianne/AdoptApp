@@ -11,7 +11,7 @@ export default function SolicitudesAdmin() {
     try {
       const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/adoptionForm');
       const data = await res.json();
-      setSolicitudes(data);
+      setSolicitudes(data.message);
     } catch (error) {
       console.error("Error al cargar solicitudes:", error);
     } finally {
@@ -25,10 +25,24 @@ export default function SolicitudesAdmin() {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text>🐶 Mascota : </Text> 
-      <Text>👤 Usuario {item.usuarioId}</Text>
+       <TouchableOpacity 
+                                         
+                                         onPress={() => { 
+                                                      router.push(`/${item.id}/detalle`);
+                                                     }}
+                                      >
+                                          <Text >Ver mascota 🐶</Text>
+                                      </TouchableOpacity> 
+        <TouchableOpacity
+        
+            onPress={() => router.push(`/admin/usuarios/${item.userId}`)}
+          >
+            <Text >Ver perfil del solicitante</Text>
+          </TouchableOpacity>
       <Text>🏠 Vivienda: {item.vivienda}</Text>
       <Text>💼 Profesión: {item.profesion}</Text>
+      <Text>🐾Tiene otras mascotas?: {item.otrasMascotas}</Text>
+         <Text>comentarios: {item.comentarios}</Text>
       <Text>📝 Estado: {item.estado}</Text>
 
       <View style={styles.buttons}>
@@ -81,7 +95,7 @@ export default function SolicitudesAdmin() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { marginTop:50 ,flex: 1, padding: 20 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
   card: { backgroundColor: '#eee', padding: 15, borderRadius: 10, marginBottom: 15 },
   buttons: { flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' },
