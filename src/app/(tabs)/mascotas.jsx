@@ -1,10 +1,11 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useMascotas } from '../../context/mascotasContext'
 import CardMascotas from '../../components/cardMascotas';
 
-export default function mascotas() {
+
+export default function Mascotas() {
     const { mascotas, loadingMascotas, errorMascotas, fetchMascotas } = useMascotas();
 
     if (loadingMascotas) {
