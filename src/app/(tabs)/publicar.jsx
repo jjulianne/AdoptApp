@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Text, TextInput, View, TouchableOpacity, ScrollView, Image, StyleSheet, Alert } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, ScrollView, Image, StyleSheet, Alert,Platform } from 'react-native';
 import { useMascotas } from '../../context/mascotasContext';
 import { pickImageFromGallery, takePhotoFromCamera} from '../../utils/image.picker';
 import { useRouter } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
+
 
 export default function PublicarMascota() {
   const [name, setName] = useState('');
@@ -18,7 +20,7 @@ export default function PublicarMascota() {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!name || !type || !breed || !age || !description || !location || !photo || !genero) {
+    if (!name || !type ||  !age || !description || !location || !photo || !genero) {
       Alert.alert("Faltan datos", "Por favor completá todos los campos.");
       return;
     }
@@ -37,62 +39,105 @@ export default function PublicarMascota() {
     Alert.alert( "Mascota publicada correctamente.");
     router.replace("/mascotas");
   };
+return (
+  <ScrollView contentContainerStyle={styles.container}>
+    <Text style={styles.heading}>Publicar Mascota</Text>
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Publicar Mascota</Text>
+    <Text style={styles.label}>Nombre</Text>
+    <TextInput
+      style={styles.input}
+      value={name}
+      onChangeText={setName}
+      placeholder="Ej. Pupi"
+    />
 
-      <Text style={styles.label}>Nombre</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Ej. pupi" />
+    <Text style={styles.label}>Tipo</Text>
+    <View style={styles.pickerContainer}>
+      <Picker
+        selectedValue={type}
+        onValueChange={setType}
+        style={styles.picker}
+      >
+        <Picker.Item label="Seleccionar tipo..." value="" />
+        <Picker.Item label="Perro" value="perro" />
+        <Picker.Item label="Gato" value="gato" />
+      </Picker>
+    </View>
 
-      <Text style={styles.label}>Tipo</Text>
-      <TextInput style={styles.input} value={type} onChangeText={setType} placeholder="perro o gato" />
+    <Text style={styles.label}>Edad</Text>
+    <TextInput
+      style={styles.input}
+      value={age}
+      onChangeText={setAge}
+      placeholder="Ej. 3"
+      keyboardType="numeric"
+    />
 
-      <Text style={styles.label}>Raza</Text>
-      <TextInput style={styles.input} value={breed} onChangeText={setBreed} placeholder="Ej. Mestizo" />
+    <Text style={styles.label}>Género</Text>
+    <View style={styles.pickerContainer}>
+      <Picker
+        selectedValue={genero}
+        onValueChange={setGenero}
+        style={styles.picker}
+      >
+        <Picker.Item label="Seleccionar género..." value="" />
+        <Picker.Item label="Hembra" value="hembra" />
+        <Picker.Item label="Macho" value="macho" />
+      </Picker>
+    </View>
 
-      <Text style={styles.label}>Edad</Text>
-      <TextInput style={styles.input} value={age} onChangeText={setAge} placeholder="Ej. 3" keyboardType="numeric" />
-      <Text style={styles.label}>genero</Text>
-      <TextInput style={styles.input} value={genero} onChangeText={setGenero} placeholder="hembra/macho"  />
-      <Text style={styles.label}>Descripción</Text>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Escribí una descripción..."
-        multiline
-      />
+    <Text style={styles.label}>Descripción</Text>
+    <TextInput
+      style={[styles.input, styles.textArea]}
+      value={description}
+      onChangeText={setDescription}
+      placeholder="Escribí una descripción..."
+      multiline
+    />
 
-      <Text style={styles.label}>Ubicación</Text>
-      <TextInput style={styles.input} value={location} onChangeText={setLocation} placeholder="Ej. Buenos Aires" />
+    <Text style={styles.label}>Ubicación</Text>
+    <TextInput
+      style={styles.input}
+      value={location}
+      onChangeText={setLocation}
+      placeholder="Ej. Buenos Aires"
+    />
 
-      {photo && <Image source={{ uri: photo }} style={styles.image} />}
+    {photo && <Image source={{ uri: photo }} style={styles.image} />}
 
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={async () => {
+    <View style={styles.buttonGroup}>
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={async () => {
           const uri = await pickImageFromGallery();
           if (uri) setPhoto(uri);
-        }}>
-          <Text style={styles.secondaryText}>Seleccionar Imagen</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={async () => {
+        }}
+      >
+        <Text style={styles.secondaryText}>Seleccionar Imagen</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={async () => {
           const uri = await takePhotoFromCamera();
           if (uri) setPhoto(uri);
-        }}>
-          <Text style={styles.secondaryText}>Tomar Foto</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
-        <Text style={styles.primaryText}>Publicar Mascota</Text>
+        }}
+      >
+        <Text style={styles.secondaryText}>Tomar Foto</Text>
       </TouchableOpacity>
-    </ScrollView>
-  );
+    </View>
+
+    <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
+      <Text style={styles.primaryText}>Publicar Mascota</Text>
+    </TouchableOpacity>
+  </ScrollView>
+);
+
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:50,
     backgroundColor: '#F9fafb',
     padding: 20,
     paddingBottom: 40,
@@ -158,5 +203,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 17,
     fontWeight: '600',
+  },
+   pickerContainer: {
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 8,
+  marginBottom: 15,
+  overflow: 'hidden',
+},
+ picker: {
+    marginBottom: 15,
+    borderWidth: Platform.OS === 'android' ? 1 : 0,
+    borderColor: '#ccc',
+    borderRadius: 8,
   },
 });

@@ -21,14 +21,10 @@ export default function CardMascotas({ item }) {
         <View style={styles.overlay}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.description}>
-                {item.description || 'Este animalito busca un hogar lleno de amor.'}
+                {item.description }
             </Text>
         <View style={styles.infoRow}>
-            {item.breed && (
-                <View style={styles.infoTag}>
-                    <Text style={styles.infoText}>{item.breed}</Text>
-                </View>
-            )}
+           
             {item.age && (
                 <View style={styles.infoTag}>
                     <Text style={styles.infoText}>{item.age} años</Text>
