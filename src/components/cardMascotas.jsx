@@ -27,20 +27,20 @@ export default function CardMascotas({ item }) {
            
             {item.age && (
                 <View style={styles.infoTag}>
-                <Text style={styles.infoText}>{item.age} años</Text>
+                    <Text style={styles.infoText}>{item.age} años</Text>
                 </View>
-            ) : null}
-            {item.type ? (
+            )}
+            {item.type && (
                 <View style={styles.infoTag}>
                     <Text style={styles.infoText}>{item.type}</Text>
                 </View>
-            ) : null}
-            {item.location ? (
+            )}
+            {item.location && (
                 <View style={styles.infoTag}>
                     <Ionicons name="location" size={12} color="#444" style={{ marginRight: 4 }} />
                     <Text style={styles.infoText}>{item.location}</Text>
                 </View>
-            ) : null}
+            )}
             </View>
         <TouchableOpacity 
             style={styles.button} 
