@@ -10,10 +10,14 @@ function ProtectedLayout() {
 
   const segments = useSegments()
   const router = useRouter()
+  console.log("isAuth:", isAuth);
+console.log("user:", user);
+console.log("user?.isAdmin:", user?.isAdmin);
+
 
   useEffect(() => {
 
-    if(isAuth === null) return;
+    if(isAuth === null || user == null) return;
 
     const inAuthGroup = segments[0] === 'login'
 
@@ -21,12 +25,12 @@ function ProtectedLayout() {
     router.replace('/login');
   } else if (isAuth && inAuthGroup) {
     if (user?.isAdmin) {
-      router.replace('/admin/solicitudes');
+      router.replace('/(adminTabs)');
     } else {
       router.replace('/(tabs)');
     }
   }
-  }, [isAuth, segments])
+  }, [isAuth, user,segments])
   
 
   return <Stack
