@@ -1,7 +1,16 @@
-import {View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView,  FlatList, } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  SafeAreaView,
+  FlatList,
+} from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import CardServicios from "../../components/cardServicios";
 
 export default function Servicios() {
   const [tipoServicio, setTipoServicio] = useState("");
@@ -15,7 +24,9 @@ export default function Servicios() {
   useEffect(() => {
     const cargarServicios = async () => {
       try {
-        const res = await fetch("https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios");
+        const res = await fetch(
+          "https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios"
+        );
         const data = await res.json();
         setServicios(data);
       } catch (e) {
@@ -30,16 +41,16 @@ export default function Servicios() {
   }, []);
 
   const serviciosFiltrados = servicios.filter((s) => {
-  const matchTipo = tipoServicio
-    ? s.servicio?.toLowerCase().includes(tipoServicio.toLowerCase())
-    : true;
+    const matchTipo = tipoServicio
+      ? s.servicio?.toLowerCase().includes(tipoServicio.toLowerCase())
+      : true;
 
-  const matchDescripcion = s.descripcion
-    ?.toLowerCase()
-    .includes(searchText.toLowerCase());
+    const matchDescripcion = s.descripcion
+      ?.toLowerCase()
+      .includes(searchText.toLowerCase());
 
-  return matchTipo && matchDescripcion;
-});
+    return matchTipo && matchDescripcion;
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -121,38 +132,7 @@ export default function Servicios() {
           keyExtractor={(item, index) =>
             item?.id?.toString() || index.toString()
           }
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={styles.imagePlaceholder}>
-                <Text style={styles.imageText}>[Imagen del servicio]</Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={styles.nombre}>{item.servicio}</Text>
-                <Text style={styles.descripcion}>{item.descripcion}</Text>
-                <View style={styles.detalles}>
-                  <View style={styles.item}>
-                    <FontAwesome name="star" size={16} color="orange" />
-                    <Text style={styles.itemText}>{item.rating || "4.9"}</Text>
-                  </View>
-                  <View style={styles.item}>
-                    <Ionicons name="location" size={16} color="#444" />
-                    <Text style={styles.itemText}>
-                      {item.ubicacion || "Cerca"}
-                    </Text>
-                  </View>
-                  <View style={styles.item}>
-                    <FontAwesome name="dollar" size={16} color="#444" />
-                    <Text style={styles.itemText}>
-                      ${item.precio || "1400"}
-                    </Text>
-                  </View>
-                </View>
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>Contactar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
+          renderItem={({ item }) => <CardServicios item={item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
