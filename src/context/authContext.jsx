@@ -161,9 +161,42 @@ console.log("pass" + users.pass)
   setIsAuth(false);
 };
 
+const updateUser = async (datosActualizados) => {
+  try {
+    const body = {
+      ...user,
+      ...datosActualizados
+    };
+
+    console.log("DATOS ACTUALIZADOS",body)
+
+    const response = await fetch(`https://tp2-backend-production-eb95.up.railway.app/users/${user.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) throw new Error('Error al actualizar');
+
+    const updatedUser = await response.json();
+    console.log("UPDATE USER ",updatedUser)
+
+    if (!updatedUser.data) throw new Error('Respuesta sin "data"');
+
+    await AsyncStorage.setItem('userData', JSON.stringify(updatedUser.data));
+    setUser(updatedUser.data);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error);
+    return { success: false, message: error.message };
+  }
+};
+
+
 
     return (
-        <AuthContext.Provider value={{isAuth, login, logout, register, user,status}}>
+        <AuthContext.Provider value={{isAuth, login, logout, register, user,status,updateUser}}>
             {children}
         </AuthContext.Provider>
     )
