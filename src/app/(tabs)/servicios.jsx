@@ -110,7 +110,9 @@ export default function Servicios() {
                 styles.selectorButton,
                 tipoServicio === "paseador" && styles.selectorButtonActivo,
               ]}
-              onPress={() => setTipoServicio("paseador")}
+              onPress={() =>
+                setTipoServicio(tipoServicio === "paseador" ? "" : "paseador")
+              }
             >
               <Text style={styles.selectorTexto}>Paseador</Text>
             </TouchableOpacity>
@@ -119,7 +121,11 @@ export default function Servicios() {
                 styles.selectorButton,
                 tipoServicio === "veterinaria" && styles.selectorButtonActivo,
               ]}
-              onPress={() => setTipoServicio("veterinaria")}
+              onPress={() =>
+                setTipoServicio(
+                  tipoServicio === "veterinaria" ? "" : "veterinaria"
+                )
+              }
             >
               <Text style={styles.selectorTexto}>Veterinaria</Text>
             </TouchableOpacity>
