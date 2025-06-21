@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useMascotas } from '../../context/mascotasContext';
@@ -38,9 +38,18 @@ export default function Buscar() {
     });
   }, [mascotas, searchText, typeFilter, ageRange, sizeFilter]);
 
+  if (loadingMascotas) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF0000" />
+        <Text style={styles.loadingText}>Cargando mascotas...</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
         <Text style={styles.title}>Buscar Mascotas</Text>
 
         <TextInput
@@ -50,7 +59,7 @@ export default function Buscar() {
           onChangeText={setSearchText}
         />
 
-        {/* Filters */}
+        {/* Filtros */}
         <View style={styles.filtersContainer}>
           <Text style={styles.filterTitle}>Tipo:</Text>
           <View style={styles.filterRow}>
@@ -121,8 +130,7 @@ export default function Buscar() {
           </View>
         </View>
 
-        {/* Mascotas List */}
-        {filteredMascotas.length === 0 && !loadingMascotas ? (
+        {filteredMascotas.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Ionicons name="search-outline" size={40} color="#888" />
             <Text style={styles.emptyText}>No se encontraron resultados.</Text>
@@ -130,9 +138,10 @@ export default function Buscar() {
         ) : (
           <FlatList
             data={filteredMascotas}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) =>
+              item?.id ? item.id.toString() : `${item?.type || 'unknown'}-${index}`
+            }
             showsVerticalScrollIndicator={false}
-            scrollEnabled={false}
             renderItem={({ item }) => (
               <View style={styles.card}>
                 <ImageBackground
@@ -173,12 +182,7 @@ export default function Buscar() {
                       )}
                       {item.location && (
                         <View style={styles.infoTag}>
-                          <Ionicons
-                            name="location"
-                            size={12}
-                            color="#444"
-                            style={{ marginRight: 4 }}
-                          />
+                          <Ionicons name="location" size={12} color="#444" style={{ marginRight: 4 }} />
                           <Text style={styles.infoText}>{item.location}</Text>
                         </View>
                       )}
@@ -186,7 +190,7 @@ export default function Buscar() {
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => {
-                        // TODO: Add navigation to details
+                        // Navegar a detalles si implementás
                       }}
                     >
                       <Text style={styles.buttonText}>Ver detalles</Text>
@@ -197,7 +201,7 @@ export default function Buscar() {
             )}
           />
         )}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -208,9 +212,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   container: {
+    flex: 1,
     paddingTop: 15,
     paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 22,
@@ -260,7 +264,6 @@ const styles = StyleSheet.create({
   },
   ageInputs: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     gap: 10,
   },
   ageInput: {
@@ -363,5 +366,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 13,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#555',
   },
 });
