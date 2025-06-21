@@ -15,17 +15,14 @@ export async function geocodeLocation(address) {
       throw new Error("No se encontraron resultados para la dirección");
     }
 
-    const { geometry, components } = data.results[0];
+    const { lat, lng } = data.results[0].geometry;
 
     return {
-      latitude: geometry.lat,
-      longitude: geometry.lng,
-      city: components.city || components.town || components.village || "",
-      country: components.country || "",
-      formatted: data.results[0].formatted,
+      latitude: lat,
+      longitude: lng,
     };
   } catch (error) {
     console.error("Error en geocodificación:", error);
-    throw error;
+    return null;
   }
 }

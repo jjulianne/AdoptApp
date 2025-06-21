@@ -27,7 +27,8 @@ export default function CrearServicio() {
     }
 
     // Acá creás la variable location
-    const location = `${barrio}, ${ciudad}, Argentina`;
+    const location = `${barrio.trim()}, ${ciudad.trim()}, Argentina`;
+    console.log("Dirección enviada:", location);
 
     const nuevoServicio = {
       type: servicio,
@@ -38,11 +39,14 @@ export default function CrearServicio() {
     };
 
     try {
-      await fetch("http://10.0.2.2:8080/services", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nuevoServicio),
-      });
+      await fetch(
+        "https://tp2-backend-production-eb95.up.railway.app/services",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nuevoServicio),
+        }
+      );
 
       Alert.alert("Servicio creado exitosamente");
       router.replace("/servicios");
