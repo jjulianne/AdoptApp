@@ -22,7 +22,7 @@ export default function Mapa({ route }) {
             const data = await res.json();
             // Geocodificar ubicaciones que no tengan coordenadas
             const servicesConCoords = await Promise.all(
-            data.map(async (service) => {
+            data.message.map(async (service) => {
                 if (service.location) {
                     const coords = await geocodeLocation(service.location);
                 return { ...service, coordenadas: coords };
