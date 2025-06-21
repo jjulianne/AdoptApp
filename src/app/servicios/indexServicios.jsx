@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../../context/authContext";
 
 export default function IndexServicios() {
   const [servicios, setServicios] = useState([]);

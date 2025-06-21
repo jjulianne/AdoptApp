@@ -81,38 +81,36 @@ const login = async (usuario, password) => {
       setUser(user);
       setIsAuth(true);
       setStatus('authenticated');
-      alert('Login exitoso 👌');
+      return { success: true, message: 'Login exitoso 👌' };
     } else {
-      alert('Usuario o contraseña incorrectos');
       setStatus('unauthenticated');
+      return { success: false, message: 'Usuario o contraseña incorrectos' };
     }
   } catch (error) {
     console.error(error);
-    alert('Error en la autenticación');
     setStatus('unauthenticated');
+    return { success: false, message: 'Error en la autenticación' };
   }
 };
 
-
-   
-
-
-const register = async ({usuario, email, password}) => {
+const register = async ({usuario, email, password, phone}) => {
   try {
-    console.log("Datos que se envían:", { usuario, email, password }); 
+    console.log("Datos que se envían:", { usuario, email, password, phone }); 
     const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/users');
     const data = await response.json();
     
-const users = data.message; 
-const userExist = users.some(u => u.username === usuario);
-const emailExist = users.some(u => u.email === email);
-console.log("pass" + users.pass)
-
+    const users = data.message; 
+    const userExist = users.some(u => u.username === usuario);
+    const emailExist = users.some(u => u.email === email);
+    const phoneExist = users.some(u => u.phone === phone);
+    console.log("pass" + users.pass)
 
     if (userExist) {
-      alert('Usuario ya registrado');
+      return { success: false, message: 'Usuario ya registrado' };
     } else if (emailExist) {
-      alert('Email ya registrado');
+      return { success: false, message: 'Email ya registrado' };
+    } else if (phoneExist) {
+      return { success: false, message: 'Teléfono ya registrado' };
     } else {
       const body = JSON.stringify({
         email: email,
@@ -120,8 +118,8 @@ console.log("pass" + users.pass)
         pass: password,
         avatar: "", 
         location: "",
-          phone: "",
-         isAdmin: false,
+        phone: phone,
+        isAdmin: false,
       });
 
       const respuesta = await fetch('https://tp2-backend-production-eb95.up.railway.app/users', {
@@ -132,28 +130,23 @@ console.log("pass" + users.pass)
         body: body
       });
 
-     
-
       const json = await respuesta.json();
-       console.log("respuesta "+json.username)
+      console.log("respuesta "+json.username)
       console.log("Respuesta del registro:", json);
 
       if (respuesta.ok) {
-        alert('Registro Exitoso');
+        return { success: true, message: 'Registro exitoso' };
       } else {
-        alert('Error al registrar el usuario');
+        return { success: false, message: 'Error al registrar el usuario' };
       }
     }
-
   } catch (error) {
     console.error(error);
-    alert('Error en la autenticación');
+    return { success: false, message: 'Error en la autenticación' };
   }
 };
 
-
-
-    const logout = async () => {
+const logout = async () => {
   await AsyncStorage.removeItem("isAuthenticated");
   await AsyncStorage.removeItem("userData");
   setUser(null);
@@ -193,11 +186,9 @@ const updateUser = async (datosActualizados) => {
   }
 };
 
-
-
-    return (
-        <AuthContext.Provider value={{isAuth, login, logout, register, user,status,updateUser}}>
-            {children}
-        </AuthContext.Provider>
-    )
+return (
+    <AuthContext.Provider value={{isAuth, login, logout, register, user, status, updateUser}}>
+        {children}
+    </AuthContext.Provider>
+);
 }
