@@ -27,7 +27,7 @@ export default function CrearServicio() {
     }
 
     // Acá creás la variable location
-    const location = `${barrio}, ${ciudad}`;
+    const location = `${barrio}, ${ciudad}, Argentina`;
 
     const nuevoServicio = {
       type: servicio,
