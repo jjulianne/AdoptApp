@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, TextInput, View, TouchableOpacity, ScrollView, Image, StyleSheet, Alert } from 'react-native';
 import { useMascotas } from '../../context/mascotasContext';
+import { Picker } from '@react-native-picker/picker';
 import { pickImageFromGallery, takePhotoFromCamera} from '../../utils/image.picker';
 import { useRouter } from 'expo-router';
 
@@ -12,13 +13,13 @@ export default function PublicarMascota() {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [photo, setPhoto] = useState(null);
-  const [genero, setGenero] = useState("");
+  const [gender, setGender] = useState("");
 
   const { publicarMascota } = useMascotas();
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!name || !type || !breed || !age || !description || !location || !photo || !genero) {
+    if (!name || !type  || !age || !description || !location || !photo || !gender) {
       Alert.alert("Faltan datos", "Por favor completá todos los campos.");
       return;
     }
@@ -31,7 +32,7 @@ export default function PublicarMascota() {
       description,
       location,
       photo,
-      gender : genero,
+      gender : gender,
     });
 
     Alert.alert( "Mascota publicada correctamente.");
@@ -45,16 +46,24 @@ export default function PublicarMascota() {
       <Text style={styles.label}>Nombre</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Ej. pupi" />
 
-      <Text style={styles.label}>Tipo</Text>
-      <TextInput style={styles.input} value={type} onChangeText={setType} placeholder="perro o gato" />
+    
+ <Text style={styles.label}>Tipo</Text>
+      <Picker selectedValue={type} onValueChange={(itemValue) => setType(itemValue)} style={styles.picker}>
+        <Picker.Item label="Seleccionar tipo" value="" />
+        <Picker.Item label="Perro" value="perro" />
+        <Picker.Item label="Gato" value="gato" />
+        <Picker.Item label="Otro" value="otro" />
+      </Picker>
 
-      <Text style={styles.label}>Raza</Text>
-      <TextInput style={styles.input} value={breed} onChangeText={setBreed} placeholder="Ej. Mestizo" />
-
+      <Text style={styles.label}>Género</Text>
+      <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)} style={styles.picker}>
+        <Picker.Item label="Seleccionar género" value="" />
+        <Picker.Item label="Macho" value="macho" />
+        <Picker.Item label="Hembra" value="hembra" />
+      </Picker>
       <Text style={styles.label}>Edad</Text>
       <TextInput style={styles.input} value={age} onChangeText={setAge} placeholder="Ej. 3" keyboardType="numeric" />
-      <Text style={styles.label}>genero</Text>
-      <TextInput style={styles.input} value={genero} onChangeText={setGenero} placeholder="hembra/macho"  />
+  
       <Text style={styles.label}>Descripción</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
@@ -93,6 +102,7 @@ export default function PublicarMascota() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:50,
     backgroundColor: '#F9fafb',
     padding: 20,
     paddingBottom: 40,
@@ -159,4 +169,16 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
   },
+ label: {
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+
+   picker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginTop: 5,
+    marginBottom: 10,}
+  
 });

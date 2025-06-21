@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -51,15 +52,30 @@ export default function PerfilUsuarioAdmin() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Perfil del Usuario 🐾</Text>
-      <Text style={styles.label}>Nombre:</Text>
-      <Text style={styles.text}>{usuario.name}</Text>
+      <Text style={styles.title}>👤 Perfil del Usuario</Text>
 
-      <Text style={styles.label}>Email:</Text>
-      <Text style={styles.text}>{usuario.email}</Text>
+      {usuario.avatar && (
+        <Image source={{ uri: usuario.avatar }} style={styles.avatar} />
+      )}
 
-      <Text style={styles.label}>Rol:</Text>
-      <Text style={styles.text}>{usuario.isAdmin ? 'Administrador' : 'Usuario común'}</Text>
+      <Text style={styles.label}>📧 Usuario :</Text>
+      <Text style={styles.text}>{usuario.username}</Text>
+
+      {usuario.phone && (
+        <>
+          <Text style={styles.label}>📞 Teléfono:</Text>
+          <Text style={styles.text}>{usuario.phone}</Text>
+        </>
+      )}
+
+      {usuario.location && (
+        <>
+          <Text style={styles.label}>📍 Ubicación:</Text>
+          <Text style={styles.text}>{usuario.location}</Text>
+        </>
+      )}
+
+      
 
       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
         <Text style={styles.buttonText}>← Volver</Text>
@@ -70,7 +86,7 @@ export default function PerfilUsuarioAdmin() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:50,
+    marginTop: 50,
     padding: 20,
     paddingBottom: 60,
     backgroundColor: '#fff',
@@ -81,10 +97,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignSelf: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#ccc',
+  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 12,
   },
   text: {
     fontSize: 16,

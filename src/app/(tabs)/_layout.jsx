@@ -1,7 +1,26 @@
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../context/authContext";
+import { useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
 
 const TabsLayout = () => {
+  const { user, isAuth } = useAuth();
+
+  useEffect(() => {
+    if (isAuth === false) {
+      router.replace("/login");
+    }
+  }, [isAuth]);
+
+  if (isAuth === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <Tabs>
       <Tabs.Screen
@@ -34,7 +53,6 @@ const TabsLayout = () => {
           ),
         }}
       />
-
       <Tabs.Screen
         name="mascotas"
         options={{
