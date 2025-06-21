@@ -37,22 +37,14 @@ const TabsLayout = () => {
         name="buscar"
         options={{
           title: "Buscar",
+          href: null,
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search-outline" color={color} size={size} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="publicar"
-        options={{
-          title: "Publicar",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-outline" color={color} size={size} />
-          ),
-        }}
-      />
+      
       <Tabs.Screen
         name="mascotas"
         options={{
@@ -60,6 +52,17 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="paw-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="publicar"
+        options={{
+          title: "Publicar",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-outline" color={color} size={size} />
           ),
         }}
       />
@@ -89,7 +92,7 @@ const TabsLayout = () => {
         options={{
           tabBarLabel: "Mapa",
           headerShown: false,
-          //href: null,
+          href: null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="paw-outline" size={size} color={color} />
           ),

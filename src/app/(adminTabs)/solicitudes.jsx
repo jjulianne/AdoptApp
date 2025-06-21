@@ -9,12 +9,12 @@ export default function SolicitudesAdmin() {
     solicitudes,
     loading,
     actualizarSolicitud,
-    rechazarSolicitud
+  
   } = useSolicitudes(); 
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <TouchableOpacity onPress={() => router.push(`/${item.id}/detalle`)}>
+      <TouchableOpacity onPress={() => router.push(`/${item.petId}/detalle`)}>
         <Text style={styles.link}>🐶 Ver ficha de la mascota</Text>
       </TouchableOpacity>
 
@@ -25,7 +25,7 @@ export default function SolicitudesAdmin() {
       <Text style={styles.text}>🏠 Vivienda: <Text style={styles.bold}>{item.vivienda}</Text></Text>
       <Text style={styles.text}>💼 Profesión: <Text style={styles.bold}>{item.profesion}</Text></Text>
       <Text style={styles.text}>🐾 ¿Tiene otras mascotas?: <Text style={styles.bold}>{item.otrasMascotas}</Text></Text>
-      <Text style={styles.text}>💬 Comentarios: <Text style={styles.bold}>{item.comentarios}</Text></Text>
+      <Text style={styles.text}>💬 Porque queres adoptar una mascota?: <Text style={styles.bold}>{item.comentarios}</Text></Text>
       <Text style={styles.estado}>📋 Estado: {item.estado}</Text>
 
       <View style={styles.buttons}>
@@ -37,7 +37,7 @@ export default function SolicitudesAdmin() {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: '#F44336' }]}
-          onPress={() => rechazarSolicitud(item.id)}
+          onPress={() => actualizarSolicitud(item.id,"rechazada")}
         >
           <Text style={styles.buttonText}>Rechazar</Text>
         </TouchableOpacity>

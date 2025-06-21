@@ -10,7 +10,7 @@ export const SolicitudProvider = ({ children }) => {
   const obtenerSolicitudes = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/adoptionForm');
+      const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/adoptionForm?estado=pendiente');
       const data = await res.json();
       setSolicitudes(data.message);
     } catch (err) {
@@ -20,7 +20,6 @@ export const SolicitudProvider = ({ children }) => {
     }
   };
 
- // Dentro de SolicitudProvider
 const actualizarSolicitud = async (id, nuevoEstado) => {
   try {
     const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/adoptionForm/${id}`, {
@@ -29,27 +28,33 @@ const actualizarSolicitud = async (id, nuevoEstado) => {
       body: JSON.stringify({ estado: nuevoEstado })
     });
 
-    if (res.ok) {
-      await obtenerSolicitudes();
-    }
+  if (res.ok) {
+  if (nuevoEstado === "aceptada") {
+    alert("Solicitud aceptada, se notificara al usuario.");
+  } else if (nuevoEstado === "rechazada") {
+    alert("Solicitud rechazada.");
+  }
+  await obtenerSolicitudes(); 
+}
   } catch (err) {
     console.error('Error al actualizar solicitud:', err);
   }
 };
 
-const rechazarSolicitud = async (id) => {
+/*const rechazarSolicitud = async (id) => {
   try {
     const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/adoptionForm/${id}`, {
       method: 'DELETE'
     });
 
     if (res.ok) {
-      await obtenerSolicitudesSolicitudes();
+        
+      await obtenerSolicitudes();
     }
   } catch (err) {
     console.error('Error al rechazar solicitud:', err);
   }
-};
+};*/
 
 
   useEffect(() => {
@@ -62,7 +67,7 @@ const rechazarSolicitud = async (id) => {
       loading,
       obtenerSolicitudes,
       actualizarSolicitud,
-      rechazarSolicitud
+     
     }}>
       {children}
     </SolicitudContext.Provider>
