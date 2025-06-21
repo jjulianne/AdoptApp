@@ -18,13 +18,13 @@ export default function Mapa({ route }) {
     useEffect(() => {
         const cargarServicios = async () => {
         try {
-            const res = await fetch('https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios');
+            const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/services');
             const data = await res.json();
             // Geocodificar ubicaciones que no tengan coordenadas
             const servicesConCoords = await Promise.all(
-            data.map(async (service) => {
-                if (service.ubicacion) {
-                    const coords = await geocodeLocation(service.ubicacion);
+            data.message.map(async (service) => {
+                if (service.location) {
+                    const coords = await geocodeLocation(service.location);
                 return { ...service, coordenadas: coords };
                 }
                 // Si no tiene ubicacion, pasa sin coordenadas

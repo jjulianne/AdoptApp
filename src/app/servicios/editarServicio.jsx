@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TextInput,
@@ -8,57 +8,62 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { useAuth } from "../../context/authContext";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
-export default function CrearServicio() {
+export default function EditarServicio() {
+  const { id } = useLocalSearchParams();
   const [servicio, setServicio] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [barrio, setBarrio] = useState("");
   const router = useRouter();
-  const { user } = useAuth();
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setServicio(data.type);
+        setDescripcion(data.description);
+        setPrecio(String(data.price));
+        const partes = data.location.split(",");
+        setBarrio(partes[0]?.trim() || "");
+        setCiudad(partes[1]?.trim() || "");
+      })
+      .catch(() => Alert.alert("Error", "No se pudo cargar el servicio"));
+  }, [id]);
+
+  const handleUpdate = async () => {
     if (!servicio || !descripcion || !precio || !ciudad || !barrio) {
       Alert.alert("Faltan datos", "Completá todos los campos.");
       return;
     }
 
-    // Acá creás la variable location
     const location = `${barrio.trim()}, ${ciudad.trim()}, Argentina`;
-    console.log("Dirección enviada:", location);
-
-    const nuevoServicio = {
-      type: servicio,
-      description: descripcion,
-      price: Number(precio),
-      location, // para poder geolocalizar el servicio
-      userId: user?.id,
-    };
 
     try {
-      await fetch(
-        "https://tp2-backend-production-eb95.up.railway.app/services",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nuevoServicio),
-        }
-      );
+      await fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: servicio,
+          description: descripcion,
+          price: Number(precio),
+          location,
+        }),
+      });
 
-      Alert.alert("Servicio creado exitosamente");
-      router.replace("/servicios");
+      Alert.alert("Servicio actualizado correctamente");
+      router.replace("/servicios/indexServicios");
     } catch (error) {
-      console.error("Error al crear el servicio:", error);
-      Alert.alert("Error", "No se pudo crear el servicio.");
+      console.error(error);
+      Alert.alert("Error", "No se pudo actualizar el servicio.");
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Crear Servicio</Text>
+      <Text style={styles.heading}>Editar Servicio</Text>
 
       <Text style={styles.label}>Tipo de Servicio</Text>
       <TextInput
@@ -102,8 +107,8 @@ export default function CrearServicio() {
         placeholder="Ej. Palermo"
       />
 
-      <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
-        <Text style={styles.primaryText}>Crear Servicio</Text>
+      <TouchableOpacity style={styles.primaryButton} onPress={handleUpdate}>
+        <Text style={styles.primaryText}>Guardar Cambios</Text>
       </TouchableOpacity>
     </ScrollView>
   );
