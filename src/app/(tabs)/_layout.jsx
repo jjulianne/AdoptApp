@@ -57,6 +57,7 @@ const TabsLayout = () => {
         name="mascotas"
         options={{
           tabBarLabel: "Mascotas",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="paw-outline" size={size} color={color} />
           ),
@@ -82,6 +83,19 @@ const TabsLayout = () => {
           ),
         }}
       />
+    
+      <Tabs.Screen
+        name="maps"
+        options={{
+          tabBarLabel: "Mapa",
+          headerShown: false,
+          //href: null,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="paw-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 };

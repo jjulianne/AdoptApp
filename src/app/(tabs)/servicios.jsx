@@ -24,11 +24,10 @@ export default function Servicios() {
   useEffect(() => {
     const cargarServicios = async () => {
       try {
-        const res = await fetch(
-          "https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios"
-        );
+        const res = await fetch("http://10.0.2.2:8080/services");
         const data = await res.json();
-        setServicios(data);
+        console.log("Respuesta del backend:", data);
+        setServicios(Array.isArray(data.message) ? data.message : []);
       } catch (e) {
         console.error("Error al cargar servicios", e);
         setError("No se pudieron cargar los servicios.");
@@ -42,10 +41,10 @@ export default function Servicios() {
 
   const serviciosFiltrados = servicios.filter((s) => {
     const matchTipo = tipoServicio
-      ? s.servicio?.toLowerCase().includes(tipoServicio.toLowerCase())
+      ? s.type?.toLowerCase().includes(tipoServicio.toLowerCase())
       : true;
 
-    const matchDescripcion = s.descripcion
+    const matchDescripcion = s.description
       ?.toLowerCase()
       .includes(searchText.toLowerCase());
 
@@ -97,7 +96,7 @@ export default function Servicios() {
 
           <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
             <TouchableOpacity
-              onPress={() => router.push("/servicios/crear")}
+              onPress={() => router.push("/crear/crearservicio")}
               style={styles.crearServicioButton}
             >
               <Text style={styles.crearServicioTexto}>+ Crear Servicio</Text>
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 30,
+    paddingTop: 40,
   },
   // --- Ubicacion ---
   topBar: {

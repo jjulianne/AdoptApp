@@ -21,8 +21,8 @@ export default function CardServicios({ item }) {
         <Text style={styles.imageText}>[Imagen del servicio]</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.nombre}>{item.servicio}</Text>
-        <Text style={styles.descripcion}>{item.descripcion}</Text>
+        <Text style={styles.nombre}>{item.servicio ?? item.type}</Text>
+        <Text style={styles.descripcion}>{item.descripcion ?? item.description}</Text>
 
         <View style={styles.detalles}>
           <View style={styles.item}>
@@ -31,11 +31,11 @@ export default function CardServicios({ item }) {
           </View>
           <View style={styles.item}>
             <Ionicons name="location" size={16} color="#444" />
-            <Text style={styles.itemText}>{item.ubicacion || "Cerca"}</Text>
+            <Text style={styles.itemText}>{item.ubicacion ?? item.location ?? "Cerca"}</Text>
           </View>
           <View style={styles.item}>
             <FontAwesome name="dollar" size={16} color="#444" />
-            <Text style={styles.itemText}>${item.precio || "1400"}</Text>
+            <Text style={styles.itemText}>${item.precio ?? item.price ?? "1400"}</Text>
           </View>
         </View>
 
