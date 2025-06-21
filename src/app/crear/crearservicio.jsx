@@ -1,43 +1,54 @@
-import React, { useState } from 'react';
-import { Text, TextInput, View, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../context/authContext';
+import React, { useState } from "react";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../context/authContext";
 
 export default function CrearServicio() {
-  const [servicio, setServicio] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [precio, setPrecio] = useState('');
-  const [ubicacion, setUbicacion] = useState('');
+  const [servicio, setServicio] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [precio, setPrecio] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [barrio, setBarrio] = useState("");
   const router = useRouter();
   const { user } = useAuth();
 
   const handleSubmit = async () => {
-    if (!servicio || !descripcion || !precio || !ubicacion) {
-      Alert.alert('Faltan datos', 'Completá todos los campos.');
+    if (!servicio || !descripcion || !precio || !ciudad || !barrio) {
+      Alert.alert("Faltan datos", "Completá todos los campos.");
       return;
     }
 
+    // Acá creás la variable location
+    const location = `${barrio}, ${ciudad}`;
+
     const nuevoServicio = {
-      servicio,
-      descripcion,
-      precio: Number(precio),
-      ubicacion,
-      rating: Math.floor(Math.random() * 5) + 1,
-      usuarioId: user?.id,
+      type: servicio,
+      description: descripcion,
+      price: Number(precio),
+      location, // para poder geolocalizar el servicio
+      userId: user?.id,
     };
 
     try {
-      await fetch('https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("http://10.0.2.2:8080/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nuevoServicio),
       });
 
-      Alert.alert('Servicio creado exitosamente');
-      router.replace('/servicios');
+      Alert.alert("Servicio creado exitosamente");
+      router.replace("/servicios");
     } catch (error) {
-      console.error('Error al crear el servicio:', error);
-      Alert.alert('Error', 'No se pudo crear el servicio.');
+      console.error("Error al crear el servicio:", error);
+      Alert.alert("Error", "No se pudo crear el servicio.");
     }
   };
 
@@ -71,12 +82,20 @@ export default function CrearServicio() {
         keyboardType="numeric"
       />
 
-      <Text style={styles.label}>Ubicación</Text>
+      <Text style={styles.label}>Ciudad</Text>
       <TextInput
         style={styles.input}
-        value={ubicacion}
-        onChangeText={setUbicacion}
-        placeholder="Ej. Palermo, CABA"
+        value={ciudad}
+        onChangeText={setCiudad}
+        placeholder="Ej. Buenos Aires"
+      />
+
+      <Text style={styles.label}>Barrio</Text>
+      <TextInput
+        style={styles.input}
+        value={barrio}
+        onChangeText={setBarrio}
+        placeholder="Ej. Palermo"
       />
 
       <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
@@ -88,45 +107,45 @@ export default function CrearServicio() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F9fafb',
+    backgroundColor: "#F9fafb",
     padding: 20,
     paddingBottom: 40,
   },
   heading: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#111',
+    fontWeight: "700",
+    color: "#111",
     marginBottom: 24,
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 6,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 14,
     fontSize: 16,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
     borderWidth: 1,
     marginBottom: 16,
-    color: '#111',
+    color: "#111",
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   primaryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   primaryText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

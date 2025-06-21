@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,9 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-} from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DetalleServicio() {
   const { servicioId } = useLocalSearchParams();
@@ -19,7 +19,9 @@ export default function DetalleServicio() {
   useEffect(() => {
     const fetchServicio = async () => {
       try {
-        const res = await fetch(`https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios/${servicioId}`);
+        const res = await fetch(
+          `https://683644b2664e72d28e404ea3.mockapi.io/Pets/Servicios/${servicioId}`
+        );
         const data = await res.json();
         setServicio(data);
       } catch (error) {
@@ -52,13 +54,19 @@ export default function DetalleServicio() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.name}>{servicio.servicio}</Text>
-        <Text style={styles.desc}>{servicio.descripcion || 'Sin descripción'}</Text>
-        <Text style={styles.info}>Precio: ${servicio.precio}</Text>
-        <Text style={styles.info}>Ubicación: {servicio.ubicacion}</Text>
-        <Text style={styles.info}>Rating: ⭐ {servicio.rating || 'N/A'}</Text>
+        <Text style={styles.name}>{servicio.servicio ?? servicio.type}</Text>
+        <Text style={styles.desc}>
+          {(servicio.descripcion ?? servicio.description) || "Sin descripción"}
+        </Text>
+        <Text style={styles.info}>
+          Precio: ${servicio.precio ?? servicio.price ?? "Sin precio"}
+        </Text>
+        <Text style={styles.info}>
+          Ubicación: {servicio.ubicacion ?? servicio.location}
+        </Text>r
+        <Text style={styles.info}>Rating: ⭐ {servicio.rating ?? "N/A"}</Text>
 
         <TouchableOpacity
           style={styles.button}
@@ -75,11 +83,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingBottom: 100,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   name: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   desc: {
@@ -91,31 +99,31 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingVertical: 15,
     borderRadius: 10,
     marginTop: 30,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 100,
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 100,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 16,
   },
 });
