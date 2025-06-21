@@ -25,7 +25,7 @@ export default function SolicitudesAdmin() {
       <Text style={styles.text}>🏠 Vivienda: <Text style={styles.bold}>{item.vivienda}</Text></Text>
       <Text style={styles.text}>💼 Profesión: <Text style={styles.bold}>{item.profesion}</Text></Text>
       <Text style={styles.text}>🐾 ¿Tiene otras mascotas?: <Text style={styles.bold}>{item.otrasMascotas}</Text></Text>
-      <Text style={styles.text}>💬 Comentarios: <Text style={styles.bold}>{item.comentarios}</Text></Text>
+      <Text style={styles.text}>💬 Porque queres adoptar una mascota?: <Text style={styles.bold}>{item.comentarios}</Text></Text>
       <Text style={styles.estado}>📋 Estado: {item.estado}</Text>
 
       <View style={styles.buttons}>

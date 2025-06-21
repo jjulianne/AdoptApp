@@ -20,7 +20,6 @@ export const SolicitudProvider = ({ children }) => {
     }
   };
 
- // Dentro de SolicitudProvider
 const actualizarSolicitud = async (id, nuevoEstado) => {
   try {
     const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/adoptionForm/${id}`, {
@@ -44,7 +43,7 @@ const rechazarSolicitud = async (id) => {
     });
 
     if (res.ok) {
-      await obtenerSolicitudesSolicitudes();
+      await obtenerSolicitudes();
     }
   } catch (err) {
     console.error('Error al rechazar solicitud:', err);
