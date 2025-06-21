@@ -75,7 +75,12 @@ export default function DetalleMascota() {
   >
     <Text style={styles.buttonText}>🐾 Quiero adoptar</Text>
   </TouchableOpacity>
-)}
+
+)}   
+ <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+                <Text style={styles.buttonText}>← Volver</Text>
+              </TouchableOpacity>
+           
       </ScrollView>
     </SafeAreaView>
   );

@@ -2,6 +2,7 @@ import { Stack, useRouter, useSegments } from 'expo-router'
 import React, { useEffect } from 'react'
 import { AuthProvider, useAuth } from '../context/authContext'
 import { MascotasProvider } from '../context/mascotasContext'
+import { SolicitudProvider } from '../context/solicitudesContext'
 
 function ProtectedLayout() {
 
@@ -10,11 +11,7 @@ function ProtectedLayout() {
 
   const segments = useSegments()
   const router = useRouter()
-  console.log("isAuth:", isAuth);
-console.log("user:", user);
-console.log("user?.isAdmin:", user?.isAdmin);
-
-
+ 
   useEffect(() => {
 
     if(isAuth === null || user == null) return;
@@ -45,7 +42,10 @@ export default function LayoutPrincipal(){
   return (
     <AuthProvider>
       <MascotasProvider>
-        <ProtectedLayout/>  
+        <SolicitudProvider>
+ <ProtectedLayout/>  
+        </SolicitudProvider>
+       
       </MascotasProvider>
     </AuthProvider>
   )
