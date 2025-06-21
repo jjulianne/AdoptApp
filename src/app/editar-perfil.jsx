@@ -92,10 +92,16 @@ export default function EditarPerfil() {
         <Text>Veterinario/a</Text>
         <Switch value={veterinaria} onValueChange={setVeterinaria} />
       </View>
+<View style={styles.buttonRow}>
+  <TouchableOpacity style={[styles.button, styles.halfButton]} onPress={handleGuardar}>
+    <Text style={styles.buttonText}>Guardar Cambios</Text>
+  </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleGuardar}>
-        <Text style={styles.buttonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
+  <TouchableOpacity style={[styles.button, styles.halfButton]} onPress={() => router.push("/perfil")}>
+    <Text style={styles.buttonText}>Volver</Text>
+  </TouchableOpacity>
+</View>
+
     </ScrollView>
   );
 }
@@ -180,6 +186,16 @@ switchContainer: {
   alignItems: 'center',
   width: '100%',
   marginBottom: 10,
+},
+buttonRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  gap: 10, // or use marginRight on first button if gap not supported
+  marginTop: 20,
+},
+
+halfButton: {
+  flex: 1,
 },
 
 });
