@@ -18,7 +18,7 @@ export default function Mapa({ route }) {
     useEffect(() => {
         const cargarServicios = async () => {
         try {
-            const res = await fetch('http://10.0.2.2:8080/services');
+            const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/services');
             const data = await res.json();
             // Geocodificar ubicaciones que no tengan coordenadas
             const servicesConCoords = await Promise.all(
