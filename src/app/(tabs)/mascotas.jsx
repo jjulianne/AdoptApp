@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState} from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useMascotas } from '../../context/mascotasContext'
@@ -7,7 +7,7 @@ import CardMascotas from '../../components/cardMascotas';
 
 export default function Mascotas() {
     const { mascotas, loadingMascotas, errorMascotas, fetchMascotas } = useMascotas();
-
+    const [tipoMascota, setTipoMascota] = useState("");
     if (loadingMascotas) {
         return (
             <View style={styles.loadingContainer}>
@@ -39,11 +39,67 @@ export default function Mascotas() {
         );
     }
 
+      const mascotasFiltradas = mascotas.filter((m) => {
+const matchTipo =
+  tipoMascota && tipoMascota !== "todos"
+    ? m.type?.toLowerCase() === tipoMascota.toLowerCase()
+    : true;
+
+
+
+
+    return matchTipo
+  });
+
     return (
         <SafeAreaView style={styles.safeArea}>
+           
+            
         <View style={styles.container}>
+                    <View style={styles.selectorContainer}>
+   
+            
+                      <View style={styles.selectorButtons}>
+                                                <TouchableOpacity
+                          style={[
+                            styles.selectorButton,
+                            tipoMascota === "todos" && styles.selectorButtonActivo,
+                          ]}
+                          onPress={() =>
+                            setTipoMascota(tipoMascota === "todos" ? "" : "todos")
+                          }
+                        >
+                          <Text style={styles.selectorTexto}>Todos</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[
+                            styles.selectorButton,
+                            tipoMascota === "perro" && styles.selectorButtonActivo,
+                          ]}
+                          onPress={() =>
+                            setTipoMascota(tipoMascota === "perro" ? "" : "perro")
+                          }
+                        >
+                          <Text style={styles.selectorTexto}>Perros</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[
+                            styles.selectorButton,
+                            tipoMascota === "gato" && styles.selectorButtonActivo,
+                          ]}
+                          onPress={() =>
+                            setTipoMascota(
+                              tipoMascota === "gato" ? "" : "gato"
+                            )
+                          }
+                        >
+                          <Text style={styles.selectorTexto}>Gatos</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
         <FlatList
-            data={mascotas}
+            data={mascotasFiltradas}
             keyExtractor={(item, index) => {
                 if (item && typeof item.id !== 'undefined' && item.id !== null && !isNaN(item.id)) {
                     return item.id.toString();
@@ -70,4 +126,23 @@ const styles = StyleSheet.create({
     errorText: { fontSize: 16, color: '#FF0000', textAlign: 'center', marginTop: 10 },
     retryButton: { backgroundColor: '#FF0000', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, marginTop: 20 },
     retryButtonText: { color: '#fff', fontWeight: 'bold' },
+    selectorContainer: { marginBottom: 15, marginTop: 10 },
+    selectorLabel: { fontSize: 16, fontWeight: "500", marginBottom: 5, color: "#333" },
+  selectorButtons: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  selectorButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: "#e0e0e0",
+  },
+  selectorButtonActivo: {
+    backgroundColor: "#000",
+  },
+  selectorTexto: {
+    color: "#fff",
+    fontWeight: "600",
+  }
 });
