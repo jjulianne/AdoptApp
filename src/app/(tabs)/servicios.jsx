@@ -94,7 +94,14 @@ export default function Servicios() {
         <View style={styles.selectorContainer}>
           <Text style={styles.selectorLabel}>Tipos de servicios:</Text>
 
-          <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
+          <View style={styles.botonesFila}>
+            <TouchableOpacity
+              onPress={() => router.push("/servicios/indexServicios")}
+              style={styles.crearServicioButton}
+            >
+              <Text style={styles.crearServicioTexto}>🧾 Mis Servicios</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => router.push("/crear/crearservicio")}
               style={styles.crearServicioButton}
@@ -315,5 +322,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 14,
+  },
+
+  botonesFila: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginBottom: 10,
   },
 });
