@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TextInput,
@@ -75,7 +75,7 @@ export default function CrearServicio() {
       Alert.alert("Error", "No se pudo crear el servicio.");
     }
   };
-
+  console.log("Tipos de servicio:", tiposServicio);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Crear Servicio</Text>
