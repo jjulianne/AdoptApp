@@ -46,10 +46,10 @@ export const ServiciosProvider = ({ children }) => {
   }, []);
 
   // Función para crear un nuevo servicio
-  const crearServicio = async ({ type, description, price, location }) => {
+  const crearServicio = async ({ serviceTypeId, description, price, location }) => {
     try {
       const nuevoServicio = {
-        type,
+        serviceTypeId,
         description,
         price: Number(price),
         location,

@@ -13,7 +13,7 @@ import { useAuth } from "../../context/authContext";
 import { Picker } from "@react-native-picker/picker";
 
 export default function CrearServicio() {
-  const [tipoServicioId, setTipoServicioId] = useState("");
+  const [tipoServicioId, setTipoServicioId] = useState(null);
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [ciudad, setCiudad] = useState("");
@@ -41,7 +41,7 @@ export default function CrearServicio() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!tipoServicioId || !descripcion || !precio || !ciudad || !barrio) {
+    if (!tipoServicioId || !descripcion || !precio || !barrio) {
       Alert.alert("Faltan datos", "Completá todos los campos.");
       return;
     }
@@ -59,6 +59,7 @@ export default function CrearServicio() {
     };
 
     try {
+      console.log("Enviando nuevo servicio:", nuevoServicio);
       await fetch(
         "https://tp2-backend-production-eb95.up.railway.app/services",
         {
@@ -87,7 +88,11 @@ export default function CrearServicio() {
           onValueChange={(itemValue) => setTipoServicioId(itemValue)}
           style={styles.picker}
         >
-          <Picker.Item label="Seleccionar tipo..." value="" />
+          <Picker.Item
+            label="Seleccionar tipo..."
+            value={null}
+            enabled={false}
+          />
           {tiposServicio.map((tipo) => (
             <Picker.Item key={tipo.id} label={tipo.name} value={tipo.id} />
           ))}
