@@ -10,16 +10,36 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../../context/authContext";
+import { Picker } from "@react-native-picker/picker";
 
 export default function EditarServicio() {
   const { id } = useLocalSearchParams();
-  const [servicio, setServicio] = useState("");
+  const [tipoServicioId, setTipoServicioId] = useState(null);
+  const [tiposServicio, setTiposServicio] = useState([]);
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [barrio, setBarrio] = useState("");
   const router = useRouter();
   const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchTipos = async () => {
+      try {
+        const res = await fetch(
+          "https://tp2-backend-production-eb95.up.railway.app/services/servicetypes"
+        );
+        const data = await res.json();
+        if (Array.isArray(data.message)) {
+          setTiposServicio(data.message);
+        }
+      } catch (error) {
+        console.error("Error al cargar tipos de servicio:", error);
+      }
+    };
+
+    fetchTipos();
+  }, []);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -41,7 +61,7 @@ export default function EditarServicio() {
           return;
         }
 
-        setServicio(servicio.type);
+        setTipoServicioId(servicio.serviceTypeId);
         setDescripcion(servicio.description);
         setPrecio(String(servicio.price));
         const partes = servicio.location.split(",");
@@ -52,7 +72,7 @@ export default function EditarServicio() {
   }, [id, user]);
 
   const handleUpdate = async () => {
-    if (!servicio || !descripcion || !precio || !ciudad || !barrio) {
+    if (!tipoServicioId || !descripcion || !precio || !barrio) {
       Alert.alert("Faltan datos", "Completá todos los campos.");
       return;
     }
@@ -66,7 +86,7 @@ export default function EditarServicio() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            type: servicio,
+            serviceTypeId: tipoServicioId,
             description: descripcion,
             price: Number(precio),
             location,
@@ -87,12 +107,22 @@ export default function EditarServicio() {
       <Text style={styles.heading}>Editar Servicio</Text>
 
       <Text style={styles.label}>Tipo de Servicio</Text>
-      <TextInput
-        style={styles.input}
-        value={servicio}
-        onChangeText={setServicio}
-        placeholder="Ej. Paseador o Veterinaria"
-      />
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={tipoServicioId}
+          onValueChange={(itemValue) => setTipoServicioId(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item
+            label="Seleccionar servicio"
+            value={null}
+            enabled={false}
+          />
+          {tiposServicio.map((tipo) => (
+            <Picker.Item key={tipo.id} label={tipo.name} value={tipo.id} />
+          ))}
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Descripción</Text>
       <TextInput
@@ -112,14 +142,6 @@ export default function EditarServicio() {
         keyboardType="numeric"
       />
 
-      <Text style={styles.label}>Ciudad</Text>
-      <TextInput
-        style={styles.input}
-        value={ciudad}
-        onChangeText={setCiudad}
-        placeholder="Ej. Buenos Aires"
-      />
-
       <Text style={styles.label}>Barrio</Text>
       <TextInput
         style={styles.input}
@@ -127,9 +149,18 @@ export default function EditarServicio() {
         onChangeText={setBarrio}
         placeholder="Ej. Palermo"
       />
+      <Text style={styles.label}>Ciudad</Text>
+      <Text style={styles.valorFijo}>Buenos Aires</Text>
 
       <TouchableOpacity style={styles.primaryButton} onPress={handleUpdate}>
         <Text style={styles.primaryText}>Guardar Cambios</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.volverButton}
+        onPress={() => router.replace('/(tabs)/servicios')}
+      >
+        <Text style={styles.volverText}>← Volver a Servicios</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -176,6 +207,28 @@ const styles = StyleSheet.create({
   primaryText: {
     color: "#fff",
     fontSize: 17,
+    fontWeight: "600",
+  },
+
+  valorFijo: {
+    backgroundColor: "#e5e7eb",
+    color: "#444",
+    padding: 14,
+    borderRadius: 12,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+
+  volverButton: {
+    backgroundColor: "#E53935",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  volverText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
   },
 });

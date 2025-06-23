@@ -21,9 +21,11 @@ export default function DetalleServicio() {
   useEffect(() => {
     const fetchServicio = async () => {
       try {
-        const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${servicioId}`);
+        const res = await fetch(
+          `https://tp2-backend-production-eb95.up.railway.app/services/${servicioId}`
+        );
         const data = await res.json();
-        setServicio(data);
+        setServicio(data.message);
       } catch (error) {
         console.error("Error al cargar servicio", error);
       } finally {
@@ -56,25 +58,25 @@ export default function DetalleServicio() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.name}>{servicio.servicio ?? servicio.type}</Text>
+        <Text style={styles.name}>{servicio.serviceType || "Sin nombre"}</Text>
         <Text style={styles.desc}>
-          {(servicio.descripcion ?? servicio.description) || "Sin descripción"}
+          {servicio.description || "Sin descripción"}
         </Text>
         <Text style={styles.info}>
-          Precio: ${servicio.precio ?? servicio.price ?? "Sin precio"}
+          Precio: ${servicio.price || "Sin precio"}
         </Text>
         <Text style={styles.info}>
-          Ubicación: {servicio.ubicacion ?? servicio.location}
+          Ubicación: {servicio.location || "Sin ubicación"}
         </Text>
         <Text style={styles.info}>Rating: ⭐ {servicio.rating ?? "N/A"}</Text>
         <TouchableOpacity
-          style={styles.button}
+          style={styles.volverButton}
           onPress={() => alert("Contacto en construcción")}
         >
-          <Text style={styles.buttonText}>📞 Contactar</Text>
+          <Text style={styles.volverText}>📞 Contactar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.button}
+          style={styles.volverButton}
           onPress={async () => {
             if (!user) {
               alert("Debes estar logueado para reservar");
@@ -87,8 +89,8 @@ export default function DetalleServicio() {
                 body: JSON.stringify({
                   serviceId: servicio.id,
                   clienteId: user.id,
-         //       fechaReserva: new Date().toISOString(),
-       //         comentarioCliente: "¡Quiero reservar este servicio!",
+                  //       fechaReserva: new Date().toISOString(),
+                  //         comentarioCliente: "¡Quiero reservar este servicio!",
                 }),
               });
               if (res.ok) {
@@ -101,7 +103,14 @@ export default function DetalleServicio() {
             }
           }}
         >
-          <Text style={styles.buttonText}>Reservar</Text>
+          <Text style={styles.volverText}>Reservar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.volverButton}
+          onPress={() => router.replace("/servicios")}
+        >
+          <Text style={styles.volverText}>← Volver a Servicios</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -154,5 +163,18 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     fontSize: 16,
+  },
+
+  volverButton: {
+    backgroundColor: "#E53935",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  volverText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

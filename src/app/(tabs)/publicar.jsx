@@ -54,15 +54,18 @@ const styles = StyleSheet.create({
     color: '#444',
   },
   button: {
-    backgroundColor: '#4f8cff',
+    backgroundColor: "#E53935",
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
+    alignItems: "center",
     marginBottom: 15,
+     alignSelf: "center",
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: "600",
     textAlign: 'center',
   },
    pickerContainer: {

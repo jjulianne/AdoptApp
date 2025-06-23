@@ -64,7 +64,7 @@ export default function IndexServicios() {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.titulo}>{item.type}</Text>
+      <Text style={styles.titulo}>{item.serviceType ?? "Sin tipo"}</Text>
       <Text>{item.description}</Text>
       <Text style={styles.meta}>
         💲 {item.price} | 📍 {item.location}
@@ -101,6 +101,13 @@ export default function IndexServicios() {
           </Text>
         }
       />
+
+      <TouchableOpacity
+        style={styles.volverButton}
+        onPress={() => router.replace("/servicios")}
+      >
+        <Text style={styles.volverText}>← Volver a Servicios</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -166,4 +173,18 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     marginTop: 40,
   },
+
+volverButton: {
+  backgroundColor: "#B91C1C", // rojo oscuro
+  paddingVertical: 14,
+  borderRadius: 12,
+  alignItems: "center",
+  marginTop: 30,
+},
+volverText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "600",
+},
+
 });
