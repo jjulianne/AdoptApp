@@ -10,17 +10,19 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/authContext";
+import { useServicios } from "../../context/serviciosContext";
 import { Picker } from "@react-native-picker/picker";
 
 export default function CrearServicio() {
   const [tipoServicioId, setTipoServicioId] = useState(null);
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
-  const [ciudad, setCiudad] = useState("");
   const [barrio, setBarrio] = useState("");
-  const router = useRouter();
+
   const { user } = useAuth();
+  const { crearServicio } = useServicios();
   const [tiposServicio, setTiposServicio] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTipos = async () => {
@@ -41,42 +43,52 @@ export default function CrearServicio() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!tipoServicioId || !descripcion || !precio || !barrio) {
-      Alert.alert("Faltan datos", "Completá todos los campos.");
-      return;
-    }
 
-    // Acá creás la variable location
-    const location = `${barrio.trim()}, Buenos Aires, Argentina`;
-    console.log("Dirección enviada:", location);
+  if (!tipoServicioId || !descripcion || !precio || !barrio) {
+    Alert.alert("Faltan datos", "Completá todos los campos.");
+    return;
+  }
 
-    const nuevoServicio = {
+  if (isNaN(Number(precio))) {
+    Alert.alert("Error", "El precio debe ser un número válido.");
+    return;
+  }
+
+  if (!user?.id) {
+    Alert.alert("Error", "Usuario no identificado.");
+    return;
+  }
+
+  const location = `${barrio.trim()}, Buenos Aires, Argentina`;
+
+  console.log("📦 Datos que se van a enviar:", {
+    serviceTypeId: tipoServicioId,
+    description: descripcion,
+    price: Number(precio),
+    location,
+    userId: user?.id,
+  });
+
+  try {
+    const { success, error } = await crearServicio({
       serviceTypeId: tipoServicioId,
       description: descripcion,
       price: Number(precio),
-      location, // para poder geolocalizar el servicio
-      userId: user?.id,
-    };
+      location,
+    });
 
-    try {
-      console.log("Enviando nuevo servicio:", nuevoServicio);
-      await fetch(
-        "https://tp2-backend-production-eb95.up.railway.app/services",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nuevoServicio),
-        }
-      );
-
+    if (success) {
       Alert.alert("Servicio creado exitosamente");
       router.replace("/servicios");
-    } catch (error) {
-      console.error("Error al crear el servicio:", error);
-      Alert.alert("Error", "No se pudo crear el servicio.");
+    } else {
+      Alert.alert("Error", error || "No se pudo crear el servicio.");
     }
-  };
-  console.log("Tipos de servicio:", tiposServicio);
+  } catch (e) {
+    console.error("❌ Error inesperado:", e);
+    Alert.alert("Error inesperado", e.message || "Algo falló.");
+  }
+};
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Crear Servicio</Text>
@@ -88,11 +100,7 @@ export default function CrearServicio() {
           onValueChange={(itemValue) => setTipoServicioId(itemValue)}
           style={styles.picker}
         >
-          <Picker.Item
-            label="Seleccionar tipo..."
-            value={null}
-            enabled={false}
-          />
+          <Picker.Item label="Seleccionar servicio" value={null} enabled={false} />
           {tiposServicio.map((tipo) => (
             <Picker.Item key={tipo.id} label={tipo.name} value={tipo.id} />
           ))}
@@ -178,7 +186,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
   },
-
   valorFijo: {
     backgroundColor: "#e5e7eb",
     color: "#444",
@@ -187,7 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
-
   pickerWrapper: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -196,9 +202,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginBottom: 16,
     justifyContent: "center",
-    height: 52, // igual que un input
+    height: 52,
   },
-
   picker: {
     color: "#111",
     fontSize: 16,

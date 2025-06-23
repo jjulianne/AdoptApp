@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { AuthProvider, useAuth } from '../context/authContext'
 import { MascotasProvider } from '../context/mascotasContext'
 import { SolicitudProvider } from '../context/solicitudesContext'
+import { ServiciosProvider } from '../context/serviciosContext'
 
 function ProtectedLayout() {
 
@@ -42,10 +43,13 @@ export default function LayoutPrincipal(){
   return (
     <AuthProvider>
       <MascotasProvider>
-        <SolicitudProvider>
+        <ServiciosProvider>
+          <SolicitudProvider>
+
  <ProtectedLayout/>  
-        </SolicitudProvider>
-       
+
+          </SolicitudProvider>
+        </ServiciosProvider>
       </MascotasProvider>
     </AuthProvider>
   )

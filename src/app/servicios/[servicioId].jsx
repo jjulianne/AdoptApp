@@ -21,7 +21,7 @@ export default function DetalleServicio() {
   useEffect(() => {
     const fetchServicio = async () => {
       try {
-        const res = await fetch(`http://10.0.2.2:8080/services/${servicioId}`);
+        const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${servicioId}`);
         const data = await res.json();
         setServicio(data);
       } catch (error) {
