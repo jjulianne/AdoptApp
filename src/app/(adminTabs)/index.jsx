@@ -8,7 +8,7 @@ const AdminIndex = () => {
     <View style={styles.container}>
       <Text style={styles.title}>¿Qué querés administrar hoy?</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/(adminTabs)/mascotas')}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/(adminTabs)/mascotasAdmin')}>
         <Text style={styles.buttonText}>Mascotas</Text>
       </TouchableOpacity>
 

@@ -3,14 +3,18 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/authContext';
 
 export default function Index() {
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const router = useRouter();
+
 
   useEffect(() => {
     if (status === 'checking') return;
-console.log("status:" +status)
-    if (status === 'authenticated') {
-      router.replace('/(tabs)');
+
+    if (status === 'authenticated')
+       { if (user?.isAdmin) {
+        router.replace('/(adminTabs)');
+      }else{
+      router.replace('/(tabs)');}
     } else {
       router.replace('/login');
     }

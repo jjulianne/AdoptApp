@@ -130,6 +130,25 @@ const editarPublicacion = async (mascotaId, datosActualizados) => {
 };
 
 
+const eliminarMascota = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al eliminar la mascota');
+    }
+
+   
+    setMascotas((prevMascotas) => prevMascotas.filter((m) => m.id !== id));
+
+    return true;
+  } catch (error) {
+    console.error('Error al eliminar la mascota:', error);
+    return false;
+  }
+};
 
     return (
     <MascotasContext.Provider
@@ -141,7 +160,8 @@ const editarPublicacion = async (mascotaId, datosActualizados) => {
         adoptarMascota,
         obtenerMascotaPorId,
         publicarMascota,
-        editarPublicacion
+        editarPublicacion,
+        eliminarMascota
         }}
     >
     {children}

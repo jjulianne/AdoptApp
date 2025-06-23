@@ -7,10 +7,12 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../../context/authContext';
+import { useMascotas } from '../../../context/mascotasContext';
 
 export default function DetalleMascota() {
   const { mascotaId } = useLocalSearchParams();
@@ -18,6 +20,8 @@ export default function DetalleMascota() {
   const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(true);
   const {user} = useAuth();
+  const {eliminarMascota} = useMascotas()
+
 
   useEffect(() => {
     const fetchMascota = async () => {
@@ -37,6 +41,32 @@ export default function DetalleMascota() {
     }
   }, [mascotaId]);
 
+const handleEliminar = () => {
+  Alert.alert(
+    "Confirmar eliminación",
+    "¿Estás segura de que querés eliminar esta mascota?",
+    [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: async () => {
+          const ok = await eliminarMascota(datos.id);
+          if (ok) {
+            Alert.alert("Éxito", "Mascota eliminada con éxito");
+            router.replace(user.isAdmin ? "/(adminTabs)/mascotasAdmin" : "/(tabs)/mascotas");
+          } else {
+            Alert.alert("Error", "No se pudo eliminar la mascota");
+          }
+        },
+      },
+    ]
+  );
+};
+
   if (cargando) {
     return (
       <View style={styles.loadingContainer}>
@@ -52,11 +82,12 @@ export default function DetalleMascota() {
         <Text style={styles.errorText}>No se pudo cargar la mascota.</Text>
       </View>
     );
+ 
   }
-console.log("USER:", user);
-console.log("user?.isAdmin:", user?.isAdmin);
+  
 
   return (
+    
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView contentContainerStyle={styles.container}>
         <Image
@@ -66,7 +97,7 @@ console.log("user?.isAdmin:", user?.isAdmin);
         <Text style={styles.name}>{datos.name}</Text>
         <Text style={styles.desc}>{datos.description || 'Sin descripción'}</Text>
         <Text style={styles.info}>Edad: {datos.age} años</Text>
-        <Text style={styles.info}>Raza: {datos.breed}</Text>
+       
         <Text style={styles.info}>Tipo: {datos.type}</Text>
         <Text style={styles.info}>Ubicación: {datos.location}</Text>
 
@@ -81,12 +112,20 @@ console.log("user?.isAdmin:", user?.isAdmin);
 
 )}   
 
-{user && user.id === datos.userId &&  (
+{user && user.id === datos.userId &&   (
   <TouchableOpacity
-    style={styles.editButton}
+    style={styles.button}
     onPress={() => router.push(`/mascotas/${datos.id}/editar`)}
   >
-    <Text style={styles.editButtonText}>✏️ Editar publicación</Text>
+    <Text style={styles.buttonText}>✏️ Editar publicación</Text>
+  </TouchableOpacity>
+)}
+{user && (user.id === datos.userId || user.isAdmin) && datos.state === 'en_adopcion' && (
+  <TouchableOpacity
+    style={styles.button}
+    onPress={handleEliminar}
+  >
+    <Text style={styles.buttonText}>🗑️ Eliminar publicación</Text>
   </TouchableOpacity>
 )}
  <TouchableOpacity style={styles.button} onPress={() => router.back()}>

@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, View, SafeAreaView, Touc
 import { Ionicons } from '@expo/vector-icons'; 
 import { useMascotas } from '../../context/mascotasContext'
 import CardMascotas from '../../components/cardMascotas';
+import { useAuth } from '../../context/authContext';
 
 
 export default function Mascotas() {
