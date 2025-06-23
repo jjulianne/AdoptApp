@@ -20,6 +20,11 @@ const AdminIndex = () => {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/(adminTabs)/solicitudes')}>
         <Text style={styles.buttonText}>Ver solicitudes de adopcion </Text>
       </TouchableOpacity>
+
+
+       <TouchableOpacity style={styles.button} onPress={() => router.push('/servicios/admin')}>
+        <Text style={styles.buttonText}>Servicios</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -38,15 +43,17 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   button: {
-    backgroundColor: '#2196F3',
-    padding: 15,
-    marginVertical: 10,
-    borderRadius: 10
+    backgroundColor: '#E53935',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginBottom: 15,
+    alignItems: 'center',
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: '600',
   }
 });
 
