@@ -59,34 +59,34 @@ export default function Perfil() {
 
           {/* Botón para editar perfil */}
           <TouchableOpacity
-            style={styles.editButton}
+            style={styles.redButton}
             onPress={() => router.push("/editar-perfil")}
           >
-            <Text style={styles.editButtonText}>Editar perfil</Text>
+            <Text style={styles.redButtonText}>Editar Perfil</Text>
           </TouchableOpacity>
-<View style={styles.buttonRow}>
-  <TouchableOpacity
-    style={[styles.editButton, styles.thirdButton]}
-    onPress={() => router.push("/servicios/indexServicios")}
-  >
-    <Text style={styles.editButtonText}>Servicios</Text>
-  </TouchableOpacity>
 
-  <TouchableOpacity
-    style={[styles.editButton, styles.thirdButton]}
-    onPress={() => router.push("/mascotas/adoptadas")}
-  >
-    <Text style={styles.editButtonText}>M. Adoptadas</Text>
-  </TouchableOpacity>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={[styles.redButton, styles.rowButton]}
+              onPress={() => router.push("/servicios/indexServicios")}
+            >
+              <Text style={styles.redButtonText}>Mis Servicios</Text>
+            </TouchableOpacity>
 
-  <TouchableOpacity
-    style={[styles.editButton, styles.thirdButton]}
-    onPress={() => router.push("/mascotas/publicadas")}
-  >
-    <Text style={styles.editButtonText}>M. publicadas</Text>
-  </TouchableOpacity>
-</View>
+            <TouchableOpacity
+              style={[styles.redButton, styles.rowButton]}
+              onPress={() => router.push("/mascotas/adoptadas")}
+            >
+              <Text style={styles.redButtonText}>Solicitudes</Text>
+            </TouchableOpacity>
 
+            <TouchableOpacity
+              style={[styles.redButton, styles.rowButton]}
+              onPress={() => router.push("/mascotas/publicadas")}
+            >
+              <Text style={styles.redButtonText}>Mascotas Publicadas</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Cerrar sesión */}
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingVertical: 20,
+    paddingHorizontal: 16,
     marginBottom: 20,
   },
   profileImageContainer: {
@@ -168,10 +169,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   editButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    backgroundColor: "#E53935",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
     marginTop: 10,
   },
   editButtonText: {
@@ -197,14 +198,41 @@ const styles = StyleSheet.create({
   },
 
   buttonRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  gap: 10, // use marginRight if gap not supported
-  marginVertical: 20,
-},
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 20,
+  },
 
-thirdButton: {
-  flex: 1,
-},
+  redButton: {
+    backgroundColor: "#E53935",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    alignSelf: "center",
+    marginVertical: 10,
+  },
 
+  redButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  thirdButton: {
+    flex: 1,
+    backgroundColor: "#E53935",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 5,
+  },
+
+  rowButton: {
+    flex: 1,
+    minWidth: 100, // opcional, para evitar que se achiquen demasiado
+  },
 });

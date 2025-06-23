@@ -21,7 +21,7 @@ export default function CardServicios({ item }) {
         <Text style={styles.imageText}>[Imagen del servicio]</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.nombre}>{item.servicio ?? item.type}</Text>
+        <Text style={styles.nombre}>{item.serviceType ?? item.servicio ?? item.type}</Text>
         <Text style={styles.descripcion}>{item.descripcion ?? item.description}</Text>
 
         <View style={styles.detalles}>
@@ -102,15 +102,15 @@ const styles = StyleSheet.create({
     color: "#444",
   },
   button: {
-    backgroundColor: "#000",
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 10,
+    backgroundColor: "#E53935",
+  paddingVertical: 14,
+  borderRadius: 12,
+  alignItems: "center",
+  marginTop: 10,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
+  fontSize: 16,
+  fontWeight: "600",
   },
 });

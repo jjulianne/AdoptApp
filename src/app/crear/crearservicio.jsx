@@ -43,51 +43,50 @@ export default function CrearServicio() {
   }, []);
 
   const handleSubmit = async () => {
+    if (!tipoServicioId || !descripcion || !precio || !barrio) {
+      Alert.alert("Faltan datos", "Completá todos los campos.");
+      return;
+    }
 
-  if (!tipoServicioId || !descripcion || !precio || !barrio) {
-    Alert.alert("Faltan datos", "Completá todos los campos.");
-    return;
-  }
+    if (isNaN(Number(precio))) {
+      Alert.alert("Error", "El precio debe ser un número válido.");
+      return;
+    }
 
-  if (isNaN(Number(precio))) {
-    Alert.alert("Error", "El precio debe ser un número válido.");
-    return;
-  }
+    if (!user?.id) {
+      Alert.alert("Error", "Usuario no identificado.");
+      return;
+    }
 
-  if (!user?.id) {
-    Alert.alert("Error", "Usuario no identificado.");
-    return;
-  }
+    const location = `${barrio.trim()}, Buenos Aires, Argentina`;
 
-  const location = `${barrio.trim()}, Buenos Aires, Argentina`;
-
-  console.log("📦 Datos que se van a enviar:", {
-    serviceTypeId: tipoServicioId,
-    description: descripcion,
-    price: Number(precio),
-    location,
-    userId: user?.id,
-  });
-
-  try {
-    const { success, error } = await crearServicio({
+    console.log("📦 Datos que se van a enviar:", {
       serviceTypeId: tipoServicioId,
       description: descripcion,
       price: Number(precio),
       location,
+      userId: user?.id,
     });
 
-    if (success) {
-      Alert.alert("Servicio creado exitosamente");
-      router.replace("/servicios");
-    } else {
-      Alert.alert("Error", error || "No se pudo crear el servicio.");
+    try {
+      const { success, error } = await crearServicio({
+        serviceTypeId: tipoServicioId,
+        description: descripcion,
+        price: Number(precio),
+        location,
+      });
+
+      if (success) {
+        Alert.alert("Servicio creado exitosamente");
+        router.replace("/servicios");
+      } else {
+        Alert.alert("Error", error || "No se pudo crear el servicio.");
+      }
+    } catch (e) {
+      console.error("❌ Error inesperado:", e);
+      Alert.alert("Error inesperado", e.message || "Algo falló.");
     }
-  } catch (e) {
-    console.error("❌ Error inesperado:", e);
-    Alert.alert("Error inesperado", e.message || "Algo falló.");
-  }
-};
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -100,7 +99,11 @@ export default function CrearServicio() {
           onValueChange={(itemValue) => setTipoServicioId(itemValue)}
           style={styles.picker}
         >
-          <Picker.Item label="Seleccionar servicio" value={null} enabled={false} />
+          <Picker.Item
+            label="Seleccionar servicio"
+            value={null}
+            enabled={false}
+          />
           {tiposServicio.map((tipo) => (
             <Picker.Item key={tipo.id} label={tipo.name} value={tipo.id} />
           ))}
@@ -136,8 +139,15 @@ export default function CrearServicio() {
       <Text style={styles.label}>Ciudad</Text>
       <Text style={styles.valorFijo}>Buenos Aires</Text>
 
-      <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
-        <Text style={styles.primaryText}>Crear Servicio</Text>
+      <TouchableOpacity style={styles.volverButton} onPress={handleSubmit}>
+        <Text style={styles.volverText}>Crear Servicio</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.volverButton}
+        onPress={() => router.replace("/servicios")}
+      >
+        <Text style={styles.volverText}>← Volver a Servicios</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -208,5 +218,18 @@ const styles = StyleSheet.create({
     color: "#111",
     fontSize: 16,
     height: 50,
+  },
+
+  volverButton: {
+    backgroundColor: "#E53935",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  volverText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
