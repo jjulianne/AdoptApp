@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/authContext";
 
@@ -10,9 +17,25 @@ export default function IndexServicios() {
 
   useEffect(() => {
     if (!user?.id) return;
-    fetch(`https://tp2-backend-production-eb95.up.railway.app/services?userId=${user.id}`)
+
+    console.log("👤 Usuario logueado:", user);
+    console.log(
+      "🛠️ URL de fetch:",
+      `https://tp2-backend.../services?userId=${user?.id}`
+    );
+
+    fetch(
+      `https://tp2-backend-production-eb95.up.railway.app/services?userId=${user.id}`
+    )
       .then((res) => res.json())
-      .then((data) => setServicios(data))
+      .then((data) => {
+        if (data.success && Array.isArray(data.message)) {
+          setServicios(data.message);
+        } else {
+          console.warn("Respuesta inesperada:", data);
+          setServicios([]);
+        }
+      })
       .catch((err) => console.error("Error al obtener servicios:", err));
   }, [user]);
 
@@ -24,9 +47,12 @@ export default function IndexServicios() {
         style: "destructive",
         onPress: async () => {
           try {
-            await fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${id}`, {
-              method: "DELETE",
-            });
+            await fetch(
+              `https://tp2-backend-production-eb95.up.railway.app/services/${id}`,
+              {
+                method: "DELETE",
+              }
+            );
             setServicios(servicios.filter((s) => s.id !== id));
           } catch (error) {
             Alert.alert("Error", "No se pudo eliminar el servicio.");
@@ -40,12 +66,14 @@ export default function IndexServicios() {
     <View style={styles.card}>
       <Text style={styles.titulo}>{item.type}</Text>
       <Text>{item.description}</Text>
-      <Text style={styles.meta}>💲 {item.price} | 📍 {item.location}</Text>
+      <Text style={styles.meta}>
+        💲 {item.price} | 📍 {item.location}
+      </Text>
 
       <View style={styles.row}>
         <TouchableOpacity
           style={styles.botonEditar}
-          onPress={() => router.push(`/editar-servicio/${item.id}`)}
+          onPress={() => router.push(`/servicios/editar-servicio/${item.id}`)}
         >
           <Text style={styles.textoBoton}>Editar</Text>
         </TouchableOpacity>
@@ -67,7 +95,11 @@ export default function IndexServicios() {
         data={servicios}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tenés servicios publicados aún.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>
+            No tenés servicios publicados aún.
+          </Text>
+        }
       />
     </View>
   );

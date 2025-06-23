@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useAuth } from "../../../context/authContext";
 
 export default function EditarServicio() {
   const { id } = useLocalSearchParams();
@@ -18,20 +19,37 @@ export default function EditarServicio() {
   const [ciudad, setCiudad] = useState("");
   const [barrio, setBarrio] = useState("");
   const router = useRouter();
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user?.id) return;
     fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setServicio(data.type);
-        setDescripcion(data.description);
-        setPrecio(String(data.price));
-        const partes = data.location.split(",");
+        const servicio = data.message;
+        console.log("📦 Servicio recibido:", data);
+        console.log(
+          "🆔 Comparación: servicio.userId =",
+          data.userId,
+          "| user.id =",
+          user.id
+        );
+
+        if (String(servicio.userId) !== String(user.id)) {
+          Alert.alert("No autorizado", "No podés editar este servicio.");
+          router.replace("/servicios/indexServicios");
+          return;
+        }
+
+        setServicio(servicio.type);
+        setDescripcion(servicio.description);
+        setPrecio(String(servicio.price));
+        const partes = servicio.location.split(",");
         setBarrio(partes[0]?.trim() || "");
         setCiudad(partes[1]?.trim() || "");
       })
       .catch(() => Alert.alert("Error", "No se pudo cargar el servicio"));
-  }, [id]);
+  }, [id, user]);
 
   const handleUpdate = async () => {
     if (!servicio || !descripcion || !precio || !ciudad || !barrio) {
@@ -42,16 +60,19 @@ export default function EditarServicio() {
     const location = `${barrio.trim()}, ${ciudad.trim()}, Argentina`;
 
     try {
-      await fetch(`https://tp2-backend-production-eb95.up.railway.app/services/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: servicio,
-          description: descripcion,
-          price: Number(precio),
-          location,
-        }),
-      });
+      await fetch(
+        `https://tp2-backend-production-eb95.up.railway.app/services/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: servicio,
+            description: descripcion,
+            price: Number(precio),
+            location,
+          }),
+        }
+      );
 
       Alert.alert("Servicio actualizado correctamente");
       router.replace("/servicios/indexServicios");
