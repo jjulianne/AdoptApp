@@ -24,7 +24,7 @@ export default function Servicios() {
   useEffect(() => {
     const cargarServicios = async () => {
       try {
-        const res = await fetch("http://10.0.2.2:8080/services");
+        const res = await fetch("https://tp2-backend-production-eb95.up.railway.app/services");
         const data = await res.json();
         console.log("Respuesta del backend:", data);
         setServicios(Array.isArray(data.message) ? data.message : []);
