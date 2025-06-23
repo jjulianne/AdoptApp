@@ -11,10 +11,14 @@ import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import CardServicios from "../../components/cardServicios";
+import { useLocation } from "../../utils/useLocation";
+import { reverseGeocodeLocation } from "../../utils/geocode";
+
 
 export default function Servicios() {
   const [tipoServicio, setTipoServicio] = useState("");
-  const [ubicacion, setUbicacion] = useState("Prueba");
+  const { location, errorMsg, isLoading } = useLocation();
+  const [ubicacionNombre, setUbicacionNombre] = useState("Cargando...");
   const [searchText, setSearchText] = useState("");
   const router = useRouter();
   const [servicios, setServicios] = useState([]);
@@ -39,6 +43,18 @@ export default function Servicios() {
     cargarServicios();
   }, []);
 
+  useEffect(() => {
+    const fetchUbicacion = async () => {
+      if (!location?.latitude || !location?.longitude) return;
+
+      const nombre = await reverseGeocodeLocation(location.latitude, location.longitude);
+      setUbicacionNombre(nombre);
+    };
+
+    fetchUbicacion();
+  }, [location]);
+
+
   const serviciosFiltrados = servicios.filter((s) => {
     const matchTipo = tipoServicio
       ? s.type?.toLowerCase().includes(tipoServicio.toLowerCase())
@@ -56,9 +72,13 @@ export default function Servicios() {
       <View style={styles.container}>
         {/* Ubicacion */}
         <View style={styles.topBar}>
-          <TouchableOpacity style={styles.addressContainer}>
+          <TouchableOpacity
+            style={styles.addressContainer}
+            onPress={() => router.push("/maps")}>
             <Ionicons name="location-sharp" size={18} color="#FF0000" />
-            <Text style={styles.addressText}>{ubicacion}</Text>
+            <Text style={styles.addressText} numberOfLines={1}>
+              {ubicacionNombre}
+            </Text>
             <Ionicons
               name="chevron-down"
               size={16}

@@ -3,6 +3,8 @@ import { useRef, useState, useEffect } from 'react';
 import MapViewComponent from '../../components/mapViewComponent';
 import { useLocation } from '../../utils/useLocation';
 import { geocodeLocation } from '../../utils/geocode';
+import { ActivityIndicator } from 'react-native';
+
 
 export default function Mapa({ route }) {
     const { manualLocation } = route?.params || {};
@@ -72,8 +74,14 @@ export default function Mapa({ route }) {
     };
 
     if (locationLoading || loading) {
-        return <View style={styles.container}><Text style={styles.text}>Cargando mapa...</Text></View>;
+        return (
+            <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FF0000" />
+            <Text style={styles.loadingText}>Cargando mapa...</Text>
+            </View>
+        );
     }
+
 
     if (errorMsg || error) {
         return <View style={styles.container}><Text style={styles.errorText}>{errorMsg || error}</Text></View>;
@@ -206,5 +214,16 @@ const styles = StyleSheet.create({
         fontSize: 16, 
         color: '#007AFF', 
         fontWeight: '600' 
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff', 
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#555',
     },
 });
