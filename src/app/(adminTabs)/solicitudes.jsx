@@ -14,7 +14,7 @@ export default function SolicitudesAdmin() {
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <TouchableOpacity onPress={() => router.push(`/${item.petId}/detalle`)}>
+      <TouchableOpacity onPress={() => router.push(`/mascotas/${item.petId}/detalle`)}>
         <Text style={styles.link}>🐶 Ver ficha de la mascota</Text>
       </TouchableOpacity>
 

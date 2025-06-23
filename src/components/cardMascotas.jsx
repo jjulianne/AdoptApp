@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 
 export default function CardMascotas({ item }) {
     const router = useRouter();
+    if (!item || typeof item !== "object") return null; 
 
     return (
     <View style={styles.card}>
@@ -15,7 +16,7 @@ export default function CardMascotas({ item }) {
         >
         <View style={styles.statusBadge}>
             <Text style={styles.statusText}>
-                {item.adopted ? 'Adoptado' : 'En Adopción'}
+                {item.state === "adoptado" ? "Adoptado" : "En Adopción"}
             </Text>
         </View>
         <View style={styles.overlay}>
@@ -46,7 +47,7 @@ export default function CardMascotas({ item }) {
             style={styles.button} 
             onPress={() => {
                 console.log("Item al hacer click:", item);
-                router.push(`/${item.id}/detalle`);
+                router.push(`/mascotas/${item.id}/detalle`);
             }}>
             <Text style={styles.buttonText}>Ver detalles</Text>
         </TouchableOpacity>

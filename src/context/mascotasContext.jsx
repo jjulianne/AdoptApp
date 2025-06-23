@@ -14,51 +14,34 @@ export const MascotasProvider = ({ children }) => {
     const API_URL = "https://tp2-backend-production-eb95.up.railway.app/pets";
 
   // Función para obtener las mascotas
-    const fetchMascotas = async () => {
-    setLoadingMascotas(true);
-    setErrorMascotas(null);
-    try {
-        const response = await fetch(API_URL);
+   // En fetchMascotas (mascotasContext.js o donde lo tengas)
+const fetchMascotas = async () => {
+  setLoadingMascotas(true);
+  setErrorMascotas(null);
 
-        if (!response.ok) {
-        throw new Error(
-            `Error al cargar las mascotas: ${response.status} ${response.statusText}`
-        );
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) {
+      throw new Error(`Error al cargar mascotas: ${response.statusText}`);
     }
 
     const data = await response.json();
-
-  const mascotasDisponibles = data.message
-  .filter((mascota) => !mascota.adopted)
-  .map((mascota) => {
-    // Si la mascota ya tiene una foto, la usamos
-    let imagen = mascota.photo;   // creo que esta fallando la pre-carga de imagenes de gatos
-
-    // Si no tiene foto, asignamos una por defecto según su tipo
-    if (!imagen || imagen.trim() === "") {
-      if (mascota.type === "perro") {
-        imagen = `https://placedog.net/400/300?id=${mascota.id}`;
-      } else {
-        imagen = "https://cataas.com/cat";
-      }
-    }
-
-    return {
+    const todasLasMascotas = data.message.map(mascota => ({
       ...mascota,
-      photo: imagen,
-    };
-  });
+      photo: mascota.photo || (mascota.type === 'perro'
+        ? `https://placedog.net/400/300?id=${mascota.id}`
+        : 'https://cataas.com/cat'),
+    }));
 
-setMascotas(mascotasDisponibles);
-
-    } catch (error) {
-        console.error("Error al obtener mascotas:", error);
-        setErrorMascotas(
-        "No se pudieron cargar las mascotas. Inténtalo de nuevo más tarde."
-    );
-    } finally {
-        setLoadingMascotas(false);
-    }
+    setMascotas(todasLasMascotas);
+    return todasLasMascotas;
+  } catch (err) {
+    console.error('Error al obtener mascotas:', err);
+    setErrorMascotas("No se pudieron cargar las mascotas.");
+    return [];
+  } finally {
+    setLoadingMascotas(false);
+  }
 };
 
   // Efecto para cargar las mascotas al inicio
@@ -129,6 +112,24 @@ const publicarMascota = async ({ name, type, breed, age, photo, description, loc
   }
 };
 
+const editarPublicacion = async (mascotaId, datosActualizados) => {
+  try {
+    const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/pets/${mascotaId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(datosActualizados),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error al editar publicación:", error);
+  }
+};
+
+
 
     return (
     <MascotasContext.Provider
@@ -139,7 +140,8 @@ const publicarMascota = async ({ name, type, breed, age, photo, description, loc
         fetchMascotas,
         adoptarMascota,
         obtenerMascotaPorId,
-        publicarMascota
+        publicarMascota,
+        editarPublicacion
         }}
     >
     {children}

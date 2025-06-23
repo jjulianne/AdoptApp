@@ -74,16 +74,16 @@ export default function Perfil() {
 
   <TouchableOpacity
     style={[styles.editButton, styles.thirdButton]}
-    onPress={() => router.push("/mascotas/indexMascotasAdoptadas")}
+    onPress={() => router.push("/mascotas/adoptadas")}
   >
     <Text style={styles.editButtonText}>M. Adoptadas</Text>
   </TouchableOpacity>
 
   <TouchableOpacity
     style={[styles.editButton, styles.thirdButton]}
-    onPress={() => router.push("/mascotas/MascotasEnAdopcion")}
+    onPress={() => router.push("/mascotas/publicadas")}
   >
-    <Text style={styles.editButtonText}>M. en Adopción</Text>
+    <Text style={styles.editButtonText}>M. publicadas</Text>
   </TouchableOpacity>
 </View>
 

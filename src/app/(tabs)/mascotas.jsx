@@ -39,18 +39,16 @@ export default function Mascotas() {
         );
     }
 
-      const mascotasFiltradas = mascotas.filter((m) => {
-const matchTipo =
-  tipoMascota && tipoMascota !== "todos"
-    ? m.type?.toLowerCase() === tipoMascota.toLowerCase()
-    : true;
+const mascotasFiltradas = mascotas.filter((m) => {
+  const matchTipo =
+    tipoMascota && tipoMascota !== "todos"
+      ? m.type?.toLowerCase() === tipoMascota.toLowerCase()
+      : true;
 
+  const matchEstado = m.state === "en_adopcion"; 
 
-
-
-    return matchTipo
-  });
-
+  return matchTipo && matchEstado;
+});
     return (
         <SafeAreaView style={styles.safeArea}>
            

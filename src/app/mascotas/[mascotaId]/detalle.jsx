@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../../context/authContext';
 
 export default function DetalleMascota() {
   const { mascotaId } = useLocalSearchParams();
@@ -53,6 +53,8 @@ export default function DetalleMascota() {
       </View>
     );
   }
+console.log("USER:", user);
+console.log("user?.isAdmin:", user?.isAdmin);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -68,15 +70,25 @@ export default function DetalleMascota() {
         <Text style={styles.info}>Tipo: {datos.type}</Text>
         <Text style={styles.info}>Ubicación: {datos.location}</Text>
 
-      {!user?.isAdmin && (
+      {user && !user.isAdmin && user.id !== datos.userId &&  ( //ver
   <TouchableOpacity
     style={styles.button}
     onPress={() => router.push(`/formulario-adopcion/${datos.id}`)}
   >
     <Text style={styles.buttonText}>🐾 Quiero adoptar</Text>
   </TouchableOpacity>
+  
 
 )}   
+
+{user && user.id === datos.userId &&  (
+  <TouchableOpacity
+    style={styles.editButton}
+    onPress={() => router.push(`/mascotas/${datos.id}/editar`)}
+  >
+    <Text style={styles.editButtonText}>✏️ Editar publicación</Text>
+  </TouchableOpacity>
+)}
  <TouchableOpacity style={styles.button} onPress={() => router.back()}>
                 <Text style={styles.buttonText}>← Volver</Text>
               </TouchableOpacity>
@@ -140,4 +152,18 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 16,
   },
+  editButton: {
+  backgroundColor: '#ffa500',
+  padding: 12,
+  borderRadius: 10,
+  marginTop: 15,
+  alignItems: 'center',
+},
+
+editButtonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 });

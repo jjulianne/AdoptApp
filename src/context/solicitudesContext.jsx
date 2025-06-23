@@ -41,7 +41,7 @@ const actualizarSolicitud = async (id, nuevoEstado) => {
   }
 };
 
-/*const rechazarSolicitud = async (id) => {
+const eliminarSolicitud = async (id) => {
   try {
     const res = await fetch(`https://tp2-backend-production-eb95.up.railway.app/adoptionForm/${id}`, {
       method: 'DELETE'
@@ -54,7 +54,7 @@ const actualizarSolicitud = async (id, nuevoEstado) => {
   } catch (err) {
     console.error('Error al rechazar solicitud:', err);
   }
-};*/
+}
 
 
   useEffect(() => {
@@ -67,6 +67,7 @@ const actualizarSolicitud = async (id, nuevoEstado) => {
       loading,
       obtenerSolicitudes,
       actualizarSolicitud,
+      eliminarSolicitud
      
     }}>
       {children}
