@@ -12,6 +12,8 @@ export default function Mascotas() {
      const router= useRouter()
     const { mascotas, loadingMascotas, errorMascotas, fetchMascotas } = useMascotas();
     const [tipoMascota, setTipoMascota] = useState("");
+    const [estadoFiltro, setEstadoFiltro] = useState("");
+
     if (loadingMascotas) {
         return (
             <View style={styles.loadingContainer}>
@@ -49,8 +51,11 @@ const mascotasFiltradas = mascotas.filter((m) => {
       ? m.type?.toLowerCase() === tipoMascota.toLowerCase()
       : true;
 
-  // Si el usuario es admin, no filtra por estado
-  const matchEstado = user?.isAdmin ? true : m.state === "en_adopcion";
+  const matchEstado = estadoFiltro
+    ? m.state === estadoFiltro
+    : user?.isAdmin
+    ? true
+    : m.state === "en_adopcion";
 
   return matchTipo && matchEstado;
 });
@@ -103,9 +108,38 @@ const mascotasFiltradas = mascotas.filter((m) => {
                           <Text style={styles.selectorTexto}>Gatos</Text>
                         </TouchableOpacity>
                       </View>
-                    </View>
+                      
+  <View style={[styles.selectorButtons, { marginTop: 10 }]}>
+    <TouchableOpacity
+      style={[
+        styles.selectorButton,
+        estadoFiltro === "" && styles.selectorButtonActivo,
+      ]}
+      onPress={() => setEstadoFiltro("")}
+    >
+      <Text style={styles.selectorTexto}>Todas</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.selectorButton,
+        estadoFiltro === "en_adopcion" && styles.selectorButtonActivo,
+      ]}
+      onPress={() => setEstadoFiltro("en_adopcion")}
+    >
+      <Text style={styles.selectorTexto}>En adopción</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.selectorButton,
+        estadoFiltro === "adoptado" && styles.selectorButtonActivo,
+      ]}
+      onPress={() => setEstadoFiltro("adoptado")}
+    >
+      <Text style={styles.selectorTexto}>Adoptadas</Text>
+    </TouchableOpacity>
+  </View>
 
-  
+                    </View>
 
         <FlatList
             data={mascotasFiltradas}

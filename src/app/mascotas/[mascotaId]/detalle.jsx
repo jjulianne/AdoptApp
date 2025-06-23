@@ -112,7 +112,7 @@ const handleEliminar = () => {
 
 )}   
 
-{user && user.id === datos.userId &&   (
+{user && user.id === datos.userId && datos.state === 'en_adopcion' &&  (
   <TouchableOpacity
     style={styles.button}
     onPress={() => router.push(`/mascotas/${datos.id}/editar`)}
