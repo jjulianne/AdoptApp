@@ -64,6 +64,10 @@ export default function SolicitudesRealizadas() {
                 <Text style={styles.textoBoton}>Cancelar solicitud</Text>
               </TouchableOpacity>
             )}
+
+             <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+                            <Text style={styles.buttonText}>← Volver</Text>
+                          </TouchableOpacity>
           </View>
         )}
       />
@@ -103,5 +107,17 @@ textoBoton: {
   color: 'white',
   fontWeight: 'bold',
 },
+  button: {
+    backgroundColor: '#FF0000',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 
 });

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../context/authContext';
 import { useRouter } from 'expo-router';
+import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 export default function EditarPerfil() {
   const { user, updateUser } = useAuth();
@@ -28,16 +29,22 @@ export default function EditarPerfil() {
     }
   };
 
-  const handleGuardar = async () => {
-  const result = await updateUser({
+const handleGuardar = async () => {
+  try {
+    let nuevaUrl = avatar;
 
-  location,
-  phone,
-  avatar,
-  paseador,
-  veterinaria
-});
+    if (avatar?.startsWith('file://')) {
+      nuevaUrl = await uploadImageToCloudinary(avatar, 'avatar_actualizado.jpg');
+    }
 
+    const result = await updateUser({
+      name,
+      location,
+      phone,
+      avatar: nuevaUrl,
+      paseador,
+      veterinaria,
+    });
 
     if (result.success) {
       Alert.alert('Perfil actualizado con éxito');
@@ -45,7 +52,12 @@ export default function EditarPerfil() {
     } else {
       Alert.alert('Error', result.message || 'No se pudo actualizar el perfil');
     }
-  };
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    Alert.alert('Error', 'No se pudo actualizar el perfil');
+  }
+};
+
 
   return (<ScrollView contentContainerStyle={styles.container}>
   <Text style={styles.title}>Editar Perfil</Text>

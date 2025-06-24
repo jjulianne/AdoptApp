@@ -4,6 +4,8 @@ import { useMascotas } from '../../context/mascotasContext';
 import { Picker } from '@react-native-picker/picker';
 import { pickImageFromGallery, takePhotoFromCamera} from '../../utils/image.picker';
 import { useRouter } from 'expo-router';
+import { uploadImageToCloudinary } from '../../utils/cloudinary';
+
 
 export default function PublicarMascota() {
   const [name, setName] = useState('');
@@ -17,12 +19,15 @@ export default function PublicarMascota() {
 
   const { publicarMascota } = useMascotas();
   const router = useRouter();
+const handleSubmit = async () => {
+  if (!name || !type || !age || !description || !location || !photo || !gender) {
+    Alert.alert("Faltan datos", "Por favor completá todos los campos.");
+    return;
+  }
 
-  const handleSubmit = async () => {
-    if (!name || !type  || !age || !description || !location || !photo || !gender) {
-      Alert.alert("Faltan datos", "Por favor completá todos los campos.");
-      return;
-    }
+  try {
+    const cloudinaryUrl = await uploadImageToCloudinary(photo, 'mascota.jpg');
+    console.log("URL de la imagen subida:", cloudinaryUrl);
 
     await publicarMascota({
       name,
@@ -31,13 +36,18 @@ export default function PublicarMascota() {
       age,
       description,
       location,
-      photo,
-      gender : gender,
+      photo: cloudinaryUrl,
+      gender,
     });
 
-    Alert.alert( "Mascota publicada correctamente.");
+    Alert.alert("Mascota publicada correctamente 🐾");
     router.replace("/mascotas");
-  };
+  } catch (error) {
+    console.error("Error al subir imagen o publicar mascota:", error);
+    Alert.alert("Error", "No se pudo publicar la mascota. Intentá de nuevo.");
+  }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -92,6 +102,7 @@ export default function PublicarMascota() {
           <Text style={styles.secondaryText}>Tomar Foto</Text>
         </TouchableOpacity>
       </View>
+
 
       <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
         <Text style={styles.primaryText}>Publicar Mascota</Text>

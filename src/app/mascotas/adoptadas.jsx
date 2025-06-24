@@ -52,6 +52,10 @@ const Adoptadas = () => {
       >
         <Text style={styles.buttonText}>📋 Ver mis solicitudes</Text>
       </TouchableOpacity>
+
+       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+                      <Text style={styles.buttonText}>← Volver</Text>
+                    </TouchableOpacity>
     </View>
   );
 };
@@ -92,7 +96,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#FF0000',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
