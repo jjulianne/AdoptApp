@@ -112,7 +112,14 @@ const handleEliminar = () => {
 
 )}   
 
-{user && user.id === datos.userId && datos.state === 'en_adopcion' &&  (
+
+
+  {user && (user.id === datos.userId || user.isAdmin) && datos.state ===  'en_adopcion'  && (
+    <View style={styles.adminBox}>
+      <Text style={styles.adminText}>¿Querés administrar esta publicación?</Text>
+
+
+{user && (user.id === datos.userId || user.isAdmin) && datos.state ===  'en_adopcion' && (
   <TouchableOpacity
     style={styles.button}
     onPress={() => router.push(`/mascotas/${datos.id}/editar`)}
@@ -128,6 +135,12 @@ const handleEliminar = () => {
     <Text style={styles.buttonText}>🗑️ Eliminar publicación</Text>
   </TouchableOpacity>
 )}
+
+    </View>
+  )}
+
+
+
  <TouchableOpacity style={styles.button} onPress={() => router.back()}>
                 <Text style={styles.buttonText}>← Volver</Text>
               </TouchableOpacity>
@@ -204,5 +217,22 @@ editButtonText: {
   fontSize: 16,
   fontWeight: 'bold',
 },
+adminBox: {
+  backgroundColor: '#f2f2f2',
+  padding: 15,
+  marginTop: 25,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  alignItems: 'center',
+},
+adminText: {
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#333',
+  marginBottom: 10,
+  textAlign: 'center',
+},
+
 
 });
