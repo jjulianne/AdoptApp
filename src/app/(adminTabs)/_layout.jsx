@@ -35,15 +35,7 @@ const AdminTabsLayout = () => {
           ),
         }}
       />
-      <Tabs.Screen
-        name="logout"
-        options={{
-          title: "Salir",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="log-out-outline" color={color} size={size} />
-          ),
-        }}
-      />
+    
       <Tabs.Screen
   name="mascotasAdmin"
   options={{
@@ -75,6 +67,17 @@ const AdminTabsLayout = () => {
     ),
   }}
 />
+  <Tabs.Screen
+        name="logout"
+        options={{
+          title: "Salir",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="log-out-outline" color={color} size={size} />
+          ),
+        }}
+      />
+
+
     </Tabs>
     
   );

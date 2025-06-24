@@ -113,7 +113,6 @@ const handleEliminar = () => {
 )}   
 
 
-
   {user && (user.id === datos.userId || user.isAdmin) && datos.state ===  'en_adopcion'  && (
     <View style={styles.adminBox}>
       <Text style={styles.adminText}>¿Querés administrar esta publicación?</Text>
@@ -138,8 +137,6 @@ const handleEliminar = () => {
 
     </View>
   )}
-
-
 
  <TouchableOpacity style={styles.button} onPress={() => router.back()}>
                 <Text style={styles.buttonText}>← Volver</Text>
@@ -233,6 +230,5 @@ adminText: {
   marginBottom: 10,
   textAlign: 'center',
 },
-
 
 });
