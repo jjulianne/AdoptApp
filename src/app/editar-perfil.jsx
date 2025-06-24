@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../context/authContext';
 import { useRouter } from 'expo-router';
+import { obtenerUbicacionPerfilTexto } from '../utils/geocode';
 import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 export default function EditarPerfil() {
@@ -28,9 +29,15 @@ export default function EditarPerfil() {
       setAvatar(result.assets[0].uri);
     }
   };
-
 const handleGuardar = async () => {
   try {
+    const ubicacionFinal = await obtenerUbicacionPerfilTexto(location);
+
+    if (!ubicacionFinal) {
+      Alert.alert('Ubicación inválida', 'No se pudo procesar la dirección');
+      return;
+    }
+
     let nuevaUrl = avatar;
 
     if (avatar?.startsWith('file://')) {
@@ -39,7 +46,7 @@ const handleGuardar = async () => {
 
     const result = await updateUser({
       name,
-      location,
+      location: ubicacionFinal,
       phone,
       avatar: nuevaUrl,
       paseador,
@@ -54,8 +61,10 @@ const handleGuardar = async () => {
     }
   } catch (error) {
     console.error('Error al actualizar perfil:', error);
-    Alert.alert('Error', 'No se pudo actualizar el perfil');
+    Alert.alert('Error', 'Ocurrió un error al guardar los cambios');
   }
+
+
 };
 
 
@@ -76,13 +85,26 @@ const handleGuardar = async () => {
     </TouchableOpacity>
   </View>
 
-   <Text   > Editar ubicaicón:</Text>
- <TextInput
-        style={styles.input}
-        placeholder="Ubicación"
-        value={location}
-        onChangeText={setLocation}
-      />
+  <View style={styles.ubicacionRow}>
+  <Text style={styles.label}>Editar ubicación:</Text>
+  <TouchableOpacity onPress={async () => {
+    const ubicacionAuto = await obtenerUbicacionPerfilTexto();
+      if (ubicacionAuto) {
+        setLocation(ubicacionAuto);
+      } else {
+        Alert.alert("No se pudo obtener la ubicación");
+      }
+    }} style={styles.ubicacionBoton}>
+      <Ionicons name="location-outline" size={20} color="#fff" />
+  </TouchableOpacity>
+  </View>
+
+  <TextInput
+    style={styles.input}
+    placeholder="Ubicación"
+    value={location}
+    onChangeText={setLocation}
+  />
    
      <Text>Editar Telefono:</Text>
       <TextInput
@@ -209,5 +231,19 @@ buttonRow: {
 halfButton: {
   flex: 1,
 },
+
+ubicacionRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+  marginBottom: 5,
+},
+ubicacionBoton: {
+  backgroundColor: '#007AFF',
+  padding: 8,
+  borderRadius: 6,
+},
+
 
 });

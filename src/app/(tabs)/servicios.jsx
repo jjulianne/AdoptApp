@@ -11,10 +11,14 @@ import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import CardServicios from "../../components/cardServicios";
+import { useLocation } from "../../utils/useLocation";
+import { reverseGeocodeLocation } from "../../utils/geocode";
 
 export default function Servicios() {
-  const [tipoServicio, setTipoServicio] = useState("");
-  const [ubicacion, setUbicacion] = useState("Prueba");
+  const [tiposUnicos, setTiposUnicos] = useState([]);
+  const [tipoServicio, setTipoServicio] = useState("todos");
+  const { location, errorMsg, isLoading } = useLocation();
+  const [ubicacionNombre, setUbicacionNombre] = useState("Cargando...");
   const [searchText, setSearchText] = useState("");
   const router = useRouter();
   const [servicios, setServicios] = useState([]);
@@ -24,10 +28,18 @@ export default function Servicios() {
   useEffect(() => {
     const cargarServicios = async () => {
       try {
-        const res = await fetch("https://tp2-backend-production-eb95.up.railway.app/services");
+        const res = await fetch(
+          "https://tp2-backend-production-eb95.up.railway.app/services"
+        );
         const data = await res.json();
         console.log("Respuesta del backend:", data);
-        setServicios(Array.isArray(data.message) ? data.message : []);
+        const serviciosCargados = Array.isArray(data.message) ? data.message : [];
+        console.log("Servicios cargados:", serviciosCargados);
+setServicios(serviciosCargados);
+
+const tipos = [...new Set(serviciosCargados.map((s) => s.serviceType?.toLowerCase()))];
+console.log("Tipos únicos detectados:", tipos);
+setTiposUnicos(tipos.filter(Boolean));
       } catch (e) {
         console.error("Error al cargar servicios", e);
         setError("No se pudieron cargar los servicios.");
@@ -39,10 +51,25 @@ export default function Servicios() {
     cargarServicios();
   }, []);
 
+  useEffect(() => {
+    const fetchUbicacion = async () => {
+      if (!location?.latitude || !location?.longitude) return;
+
+      const nombre = await reverseGeocodeLocation(
+        location.latitude,
+        location.longitude
+      );
+      setUbicacionNombre(nombre);
+    };
+
+    fetchUbicacion();
+  }, [location]);
+
   const serviciosFiltrados = servicios.filter((s) => {
-    const matchTipo = tipoServicio
-      ? s.type?.toLowerCase().includes(tipoServicio.toLowerCase())
-      : true;
+    const matchTipo =
+      tipoServicio && tipoServicio !== "todos"
+        ? s.serviceType?.toLowerCase() === tipoServicio.toLowerCase()
+        : true;
 
     const matchDescripcion = s.description
       ?.toLowerCase()
@@ -56,9 +83,14 @@ export default function Servicios() {
       <View style={styles.container}>
         {/* Ubicacion */}
         <View style={styles.topBar}>
-          <TouchableOpacity style={styles.addressContainer}>
+          <TouchableOpacity
+            style={styles.addressContainer}
+            onPress={() => router.push("/maps")}
+          >
             <Ionicons name="location-sharp" size={18} color="#FF0000" />
-            <Text style={styles.addressText}>{ubicacion}</Text>
+            <Text style={styles.addressText} numberOfLines={1}>
+              {ubicacionNombre}
+            </Text>
             <Ionicons
               name="chevron-down"
               size={16}
@@ -111,30 +143,35 @@ export default function Servicios() {
           </View>
 
           <View style={styles.selectorButtons}>
+            {/* Botón "Todos" */}
             <TouchableOpacity
               style={[
                 styles.selectorButton,
-                tipoServicio === "paseador" && styles.selectorButtonActivo,
+                (tipoServicio === "todos" || tipoServicio === "") &&
+                  styles.selectorButtonActivo,
               ]}
-              onPress={() =>
-                setTipoServicio(tipoServicio === "paseador" ? "" : "paseador")
-              }
+              onPress={() => setTipoServicio("todos")}
             >
-              <Text style={styles.selectorTexto}>Paseador</Text>
+              <Text style={styles.selectorTexto}>Todos</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.selectorButton,
-                tipoServicio === "veterinaria" && styles.selectorButtonActivo,
-              ]}
-              onPress={() =>
-                setTipoServicio(
-                  tipoServicio === "veterinaria" ? "" : "veterinaria"
-                )
-              }
-            >
-              <Text style={styles.selectorTexto}>Veterinaria</Text>
-            </TouchableOpacity>
+
+            {/* Botones generados dinámicamente desde la base */}
+            {tiposUnicos.map((tipo) => (
+              <TouchableOpacity
+                key={tipo}
+                style={[
+                  styles.selectorButton,
+                  tipoServicio === tipo && styles.selectorButtonActivo,
+                ]}
+                onPress={() =>
+                  setTipoServicio(tipoServicio === tipo ? "todos" : tipo)
+                }
+              >
+                <Text style={styles.selectorTexto}>
+                  {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
@@ -232,7 +269,9 @@ const styles = StyleSheet.create({
   },
   selectorButtons: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
+    marginBottom: 10,
   },
   selectorButton: {
     paddingVertical: 8,
