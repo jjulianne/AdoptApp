@@ -73,9 +73,16 @@ const fetchMascotas = async () => {
     }
 };
 
-    const obtenerMascotaPorId = (id) => {
-    return mascotas.find((mascota) => mascota.id === id);
-    };
+    const obtenerMascotaPorId = async (id) => {
+  try {
+    const response = await fetch(`https://tp2-backend-production-eb95.up.railway.app/pets/${id}`);
+    const data = await response.json();
+    return data.message; 
+  } catch (error) {
+    console.error("Error al obtener mascota por ID:", error);
+    return null;
+  }
+};
 
 
 

@@ -16,7 +16,7 @@ export default function Perfil() {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  console.log("user en el perfil ");
+ 
 
   return (
     <SafeAreaView style={styles.safeArea}>

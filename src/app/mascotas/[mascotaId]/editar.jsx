@@ -17,26 +17,34 @@ import { uploadImageToCloudinary } from '../../../utils/cloudinary';
 
 export default function EditarMascota() {
   const { mascotaId } = useLocalSearchParams();
+ 
   const router = useRouter();
   const { editarPublicacion, obtenerMascotaPorId } = useMascotas();
-  const [mascota, setMascota] = useState(null);
- const [nombre, setNombre] = useState(null);
-  const [edad, setEdad] = useState(null);
-  const [tipo, setTipo] = useState(null);
-  const [genero, setGenero] = useState(null);
-  const [descripcion, setDescripcion] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [photo,setPhoto]= useState(null)
-  const [cargando, setCargando] = useState(true); // ← Estado de carga
+  const [mascota, setMascota] = useState();
+ const [nombre, setNombre] = useState();
+  const [edad, setEdad] = useState();
+  const [tipo, setTipo] = useState();
+  const [genero, setGenero] = useState();
+  const [descripcion, setDescripcion] = useState();
+  const [location, setLocation] = useState();
+  const [photo,setPhoto]= useState()
+  const [cargando, setCargando] = useState(); // ← Estado de carga
 
 
 useEffect(() => {
   const cargarDatosMascota = async () => {
     try {
       const datos = await obtenerMascotaPorId(mascotaId);
-      console.log("Mascota recibida:", datos);
-      if (datos) {
+     
+     if (datos) {
         setMascota(datos);
+        setNombre(datos.name || "");
+        setEdad(datos.age ? String(datos.age) : "");
+        setTipo(datos.type || "");
+        setGenero(datos.gender || "");
+        setDescripcion(datos.description || "");
+        setLocation(datos.location || "");
+        setPhoto(datos.photo || null);
       } else {
         console.warn("No se encontró la mascota con ese ID.");
       }

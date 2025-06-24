@@ -34,7 +34,7 @@ export default function Servicios() {
         const data = await res.json();
         console.log("Respuesta del backend:", data);
         const serviciosCargados = Array.isArray(data.message) ? data.message : [];
-        console.log("Servicios cargados:", serviciosCargados);
+       
 setServicios(serviciosCargados);
 
 const tipos = [...new Set(serviciosCargados.map((s) => s.serviceType?.toLowerCase()))];

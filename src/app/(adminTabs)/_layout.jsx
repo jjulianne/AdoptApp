@@ -59,7 +59,19 @@ const AdminTabsLayout = () => {
   options={{
     title: "Solicitudes",
     tabBarIcon: ({ color, size }) => (
-      <Ionicons name="list-outline" color={color} size={size} />
+    <Ionicons name="document-text-outline" color={color} size={size} />
+
+    ),
+  }}
+/>
+
+<Tabs.Screen
+  name="usuarios"
+  options={{
+    title: "Usuarios",
+    tabBarIcon: ({ color, size }) => (
+   <Ionicons name="people-outline" color={color} size={size} />
+    
     ),
   }}
 />

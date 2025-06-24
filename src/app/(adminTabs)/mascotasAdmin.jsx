@@ -12,7 +12,7 @@ export default function Mascotas() {
      const router= useRouter()
     const { mascotas, loadingMascotas, errorMascotas, fetchMascotas } = useMascotas();
     const [tipoMascota, setTipoMascota] = useState("");
-    const [estadoFiltro, setEstadoFiltro] = useState("");
+    const [estadoFiltro, setEstadoFiltro] = useState("en_adopcion");
 
     if (loadingMascotas) {
         return (
@@ -110,15 +110,7 @@ const mascotasFiltradas = mascotas.filter((m) => {
                       </View>
                       
   <View style={[styles.selectorButtons, { marginTop: 10 }]}>
-    <TouchableOpacity
-      style={[
-        styles.selectorButton,
-        estadoFiltro === "" && styles.selectorButtonActivo,
-      ]}
-      onPress={() => setEstadoFiltro("")}
-    >
-      <Text style={styles.selectorTexto}>Todas</Text>
-    </TouchableOpacity>
+   
     <TouchableOpacity
       style={[
         styles.selectorButton,

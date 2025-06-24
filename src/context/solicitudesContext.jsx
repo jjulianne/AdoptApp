@@ -10,7 +10,7 @@ export const SolicitudProvider = ({ children }) => {
   const obtenerSolicitudes = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/adoptionForm?estado=pendiente');
+      const res = await fetch('https://tp2-backend-production-eb95.up.railway.app/adoptionForm');
       const data = await res.json();
       setSolicitudes(data.message);
     } catch (err) {

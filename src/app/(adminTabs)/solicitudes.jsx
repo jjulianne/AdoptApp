@@ -1,96 +1,117 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSolicitudes } from '../../context/solicitudesContext';
 
 export default function SolicitudesAdmin() {
   const router = useRouter();
-  const {
-    solicitudes,
-    loading,
-    actualizarSolicitud,
-  
-  } = useSolicitudes(); 
+  const { solicitudes, loading, actualizarSolicitud } = useSolicitudes();
+  const [filtro, setFiltro] = useState('pendiente');
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
+  const filtrarSolicitudes = (estado) => {
+    if (estado === 'todas') return solicitudes;
+    return solicitudes.filter((s) => s.estado === estado);
+  };
+
+  const renderCard = (item) => (
+    <View style={styles.card} key={item.id}>
       <TouchableOpacity onPress={() => router.push(`/mascotas/${item.petId}/detalle`)}>
         <Text style={styles.link}>🐶 Ver ficha de la mascota</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push(`/admin/usuarios/${item.userId}`)}>
-        <Text style={styles.link}>👤 Ver perfil del solicitante</Text>
+        <Text style={styles.link}>
+          {item.estado === 'aceptada' ? '👤 Ver perfil del adoptante' : '👤 Ver perfil del solicitante'}
+        </Text>
       </TouchableOpacity>
 
       <Text style={styles.text}>🏠 Vivienda: <Text style={styles.bold}>{item.vivienda}</Text></Text>
       <Text style={styles.text}>💼 Profesión: <Text style={styles.bold}>{item.profesion}</Text></Text>
       <Text style={styles.text}>🐾 ¿Tiene otras mascotas?: <Text style={styles.bold}>{item.otrasMascotas}</Text></Text>
-      <Text style={styles.text}>💬 Porque queres adoptar una mascota?: <Text style={styles.bold}>{item.comentarios}</Text></Text>
+      <Text style={styles.text}>💬 Comentarios: <Text style={styles.bold}>{item.comentarios}</Text></Text>
       <Text style={styles.estado}>📋 Estado: {item.estado}</Text>
 
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#4CAF50' }]}
-          onPress={() => actualizarSolicitud(item.id, 'aceptada')}
-        >
-          <Text style={styles.buttonText}>Aceptar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#F44336' }]}
-          onPress={() => actualizarSolicitud(item.id,"rechazada")}
-        >
-          <Text style={styles.buttonText}>Rechazar</Text>
-        </TouchableOpacity>
-      </View>
+      {item.estado === 'pendiente' && (
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: '#4CAF50' }]}
+            onPress={() => actualizarSolicitud(item.id, 'aceptada')}
+          >
+            <Text style={styles.buttonText}>Aceptar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: '#F44336' }]}
+            onPress={() => actualizarSolicitud(item.id, 'rechazada')}
+          >
+            <Text style={styles.buttonText}>Rechazar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#FF0000" />;
-  }
+  if (loading) return <ActivityIndicator size="large" color="#FF0000" />;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>📋 Solicitudes de Adopción</Text>
-      <FlatList
-        data={solicitudes}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
+
+      <View style={styles.filters}>
+        <TouchableOpacity onPress={() => setFiltro('pendiente')}><Text style={styles.filtro}>Pendientes</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => setFiltro('aceptada')}><Text style={styles.filtro}>Aceptadas</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => setFiltro('rechazada')}><Text style={styles.filtro}>Rechazadas</Text></TouchableOpacity>
+        
+      </View>
+
+      {filtrarSolicitudes(filtro).map(renderCard)}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
+  },
+  filters: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  filtro: {
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
   },
   card: {
-    backgroundColor: '#ffffff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    elevation: 3,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   link: {
     color: '#007BFF',
-    marginBottom: 6,
+    marginBottom: 10,
     fontWeight: 'bold',
   },
   text: {
-    marginBottom: 4,
+    marginBottom: 6,
     fontSize: 14,
   },
   bold: {
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   estado: {
     marginTop: 10,
@@ -106,7 +127,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     width: '48%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
