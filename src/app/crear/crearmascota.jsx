@@ -19,6 +19,8 @@ export default function PublicarMascota() {
 
   const { publicarMascota } = useMascotas();
   const router = useRouter();
+
+
 const handleSubmit = async () => {
   if (!name || !type || !age || !description || !location || !photo || !gender) {
     Alert.alert("Faltan datos", "Por favor completá todos los campos.");
@@ -27,8 +29,7 @@ const handleSubmit = async () => {
 
   try {
     const cloudinaryUrl = await uploadImageToCloudinary(photo, 'mascota.jpg');
-    console.log("URL de la imagen subida:", cloudinaryUrl);
-
+   
     await publicarMascota({
       name,
       type,

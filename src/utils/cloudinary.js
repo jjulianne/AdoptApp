@@ -4,7 +4,7 @@ export const uploadImageToCloudinary = async (imageUri, nombre = 'foto.jpg') => 
     formData.append('file', {
       uri: imageUri,
       type: 'image/jpeg',
-      name: nombre, // 👈 ahora es dinámico
+      name: nombre, 
     });
     formData.append('upload_preset', 'adoptapUpload');
 
