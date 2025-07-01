@@ -4,7 +4,9 @@ import { useAuth } from '../../context/authContext';
 import { useRouter } from 'expo-router';
 import { useSolicitudes } from '../../context/solicitudesContext';
 
+
 export default function SolicitudesRealizadas() {
+    const router = useRouter();
   const { user } = useAuth();
   const [solicitudes, setSolicitudes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,14 +66,19 @@ export default function SolicitudesRealizadas() {
                 <Text style={styles.textoBoton}>Cancelar solicitud</Text>
               </TouchableOpacity>
             )}
+           
 
-             <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-                            <Text style={styles.buttonText}>← Volver</Text>
-                          </TouchableOpacity>
+             
           </View>
         )}
+
+        
       />
+       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+                            <Text style={styles.buttonText}>← Volver</Text>
+                          </TouchableOpacity>
     </View>
+    
   );
 }
 

@@ -4,10 +4,12 @@ import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet }
 import { useAuth } from '../../context/authContext';
 import { useMascotas } from '../../context/mascotasContext';
 import CardMascotas from '../../components/cardMascotas';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function MascotasPublicadas() {
     const {fetchMascotas}= useMascotas()
+    
+    const router = useRouter();
     
   const { user } = useAuth();
   const [mascotas, setMascotas] = useState([]);

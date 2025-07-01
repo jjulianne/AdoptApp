@@ -152,6 +152,7 @@ const logout = async () => {
   setUser(null);
   setStatus("unauthenticated");
   setIsAuth(false);
+  router.replace('/login');
 };
 
 const updateUser = async (datosActualizados) => {
