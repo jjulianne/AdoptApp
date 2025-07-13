@@ -17,81 +17,105 @@ export const AuthProvider = ({children}) => {
          
     const cargarEstadoAuth = async () => {
         const isAuthenticated = await AsyncStorage.getItem("isAuthenticated");
-        const userData = await AsyncStorage.getItem("userData");
+        const token = await AsyncStorage.getItem("token");
 
-        if (isAuthenticated === 'true' && userData) {
+        // si tenemos token e isAuthenticated, vamos directo al /me
+        if (isAuthenticated === 'true' && token) {
+        try {
+          const response = await fetch("https://tp2-backend-production-eb95.up.railway.app/users/me", {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.user) {
             const compatible = await LocalAuthentication.hasHardwareAsync();
             const enrolled = await LocalAuthentication.isEnrolledAsync();
 
             if (compatible && enrolled) {
-                const results = await LocalAuthentication.authenticateAsync({
-                    promptMessage: 'Verifica tu identidad',
-                    fallbackLabel: "Usar contraseña",
-                    cancelLabel: "Cancelar"
-                });
+              const results = await LocalAuthentication.authenticateAsync({
+                promptMessage: 'Verifica tu identidad',
+                fallbackLabel: "Usar contraseña",
+                cancelLabel: "Cancelar"
+              });
 
-                if (results.success) {
-                    setUser(JSON.parse(userData));
-                    setStatus('authenticated');
-                    setIsAuth(true);
-                } else {
-                    await AsyncStorage.multiRemove(["isAuthenticated", "userData"]);
-                    setUser(null);
-                    setStatus('unauthenticated');
-                    setIsAuth(false);
-                }
-            } else {
-                setUser(JSON.parse(userData));
-                setStatus('authenticated');
-                setIsAuth(true);
+              if (!results.success) throw new Error("Biometría fallida");
             }
-        } else {
-            
-            await AsyncStorage.multiRemove(["isAuthenticated", "userData"]);
-            setUser(null);
-            setStatus('unauthenticated');
-            setIsAuth(false);
+
+            await AsyncStorage.setItem("userData", JSON.stringify(data.user));
+            setUser(data.user);
+            setIsAuth(true);
+            setStatus('authenticated');
+          } else {
+            throw new Error("Token inválido");
+          }
+        } catch (error) {
+          // si el token no corresponde, lo limpiamos todo
+          await AsyncStorage.multiRemove(["isAuthenticated", "userData", "token"]);
+          setUser(null);
+          setIsAuth(false);
+          setStatus('unauthenticated');
         }
+      } else {
+        await AsyncStorage.multiRemove(["isAuthenticated", "userData", "token"]);
+        setUser(null);
+        setIsAuth(false);
+        setStatus('unauthenticated');
+      }
     };
 
     cargarEstadoAuth();
-}, []);
+  }, []);
 
+
+// login adaptado al backend nuevo con JWT
 const login = async (usuario, password) => {
   try {
-    console.log('Iniciando Login');
+      const response = await fetch("https://tp2-backend-production-eb95.up.railway.app/users/login", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: usuario, // con los cambios en el back ahora se puede ingresar con mail o username
+          pass: password
+        })
+      });
 
-    const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/users');
-    console.log("Response status:", response.status);
-    const data = await response.json();
+      const data = await response.json();
 
-    const users = data.message; 
+      if (response.ok && data.token) {
+        await AsyncStorage.setItem("token", data.token);
+        await AsyncStorage.setItem("isAuthenticated", "true");
 
-    console.log("DATA:", users[0].pass);
+        // Consultamos /me para obtener info del usuario
+        const meResponse = await fetch("https://tp2-backend-production-eb95.up.railway.app/users/me", {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${data.token}`
+          }
+        });
 
-    const user = users.find(
-      u =>
-        u?.username?.trim().toLowerCase() === usuario.trim().toLowerCase() &&
-        u?.pass === password
-    );
+        const meData = await meResponse.json();
 
-    if (user) {
-      await AsyncStorage.setItem('isAuthenticated', 'true');
-      await AsyncStorage.setItem('userData', JSON.stringify(user));
-      setUser(user);
-      setIsAuth(true);
-      setStatus('authenticated');
-      return { success: true, message: 'Login exitoso 👌' };
-    } else {
-      setStatus('unauthenticated');
-      return { success: false, message: 'Usuario o contraseña incorrectos' };
+        if (meResponse.ok && meData.user) {
+          await AsyncStorage.setItem("userData", JSON.stringify(meData.user));
+          setUser(meData.user);
+          setIsAuth(true);
+          setStatus('authenticated');
+          return { success: true, message: 'Login exitoso 👌' };
+        } else {
+          return { success: false, message: 'Error obteniendo usuario' };
+        }
+      } else {
+        return { success: false, message: data.message || 'Credenciales incorrectas' };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, message: 'Error en la autenticación' };
     }
-  } catch (error) {
-    console.error(error);
-    setStatus('unauthenticated');
-    return { success: false, message: 'Error en la autenticación' };
-  }
-};
+  };
 
 const register = async ({usuario, email, password, phone}) => {
   try {
@@ -99,7 +123,7 @@ const register = async ({usuario, email, password, phone}) => {
     const response = await fetch('https://tp2-backend-production-eb95.up.railway.app/users');
     const data = await response.json();
     
-    const users = data.message; 
+    const users = data.data || []; 
     const userExist = users.some(u => u.username === usuario);
     const emailExist = users.some(u => u.email === email);
     const phoneExist = users.some(u => u.phone === phone);
@@ -146,17 +170,22 @@ const register = async ({usuario, email, password, phone}) => {
   }
 };
 
+//  ahora el logout tambien elimina el token
 const logout = async () => {
   await AsyncStorage.removeItem("isAuthenticated");
   await AsyncStorage.removeItem("userData");
+  await AsyncStorage.removeItem("token");
   setUser(null);
   setStatus("unauthenticated");
   setIsAuth(false);
   router.replace('/login');
 };
 
+
+// token en headers
 const updateUser = async (datosActualizados) => {
   try {
+    const token = await AsyncStorage.getItem("token");
     const body = {
       ...user,
       ...datosActualizados
@@ -166,7 +195,10 @@ const updateUser = async (datosActualizados) => {
 
     const response = await fetch(`https://tp2-backend-production-eb95.up.railway.app/users/${user.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify(body),
     });
 
